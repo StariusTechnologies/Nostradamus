@@ -7,9 +7,73 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Settings {
+    idGuild String
+    key     String
+    value   String @db.Text
+
+    @@id([idGuild, key])
+}
+
 model UserPreference {
     idUser String
     locale String
 
     @@id(idUser)
+}
+
+model Language {
+    id      Int    @default(autoincrement())
+    enName  String
+    frName  String
+    idGuild String
+    idRole  String
+
+    aliases LanguageAlias[]
+
+    @@id(id)
+    @@unique(idRole)
+    @@index(enName)
+    @@index(frName)
+    @@index(idGuild)
+    @@index(idRole)
+}
+
+model LanguageAlias {
+    id         Int    @default(autoincrement())
+    idLanguage Int
+    alias      String
+
+    language Language @relation(fields: [idLanguage], references: [id], onDelete: Cascade)
+
+    @@id(id)
+    @@index(alias)
+}
+
+model Country {
+    id      Int    @default(autoincrement())
+    enName  String
+    frName  String
+    idGuild String
+    idRole  String
+
+    aliases CountryAlias[]
+
+    @@id(id)
+    @@unique(idRole)
+    @@index(enName)
+    @@index(frName)
+    @@index(idGuild)
+    @@index(idRole)
+}
+
+model CountryAlias {
+    id        Int    @default(autoincrement())
+    idCountry Int
+    alias     String
+
+    country Country @relation(fields: [idCountry], references: [id], onDelete: Cascade)
+
+    @@id(id)
+    @@index(alias)
 }

@@ -1,4 +1,23 @@
 {
+    "country": {
+        "definition": {
+            "description": "Pour changer votre rôle de pays de résidence",
+            "options": {
+                "language": { "description": "Votre pays de résidence" }
+            }
+        },
+        "error": {
+            "noMember": "{{emoji}} Il y a eu une erreur de notre côté, on ne parvient pas à récupérer votre profil. Veuillez réessayer plus tard.",
+            "noRole": "{{emoji}} Ce n'est pas un pays valide. Veillez à cliquer sur l'une des options qui apparaît lorsque vous tapez au clavier. S'il n'y a aucune option, ça veut hélas dire qu'il n'y a pas de rôle sur ce serveur pour votre pays.",
+            "couldNotRemoveNativeRole": "{{emoji}} Il y a eu une erreur de notre côté, on ne parvient pas à retirer votre rôle de pays. Merci d'ouvrir un ticket de modmail à ce propos.",
+            "couldNotRemoveOtherNativeRoles": "{{emoji}} Il y a eu une erreur de notre côté, on ne parvient pas à retirer vos autres rôles de pays. Merci d'ouvrir un ticket de modmail à ce propos.",
+            "couldNotAddRole": "{{emoji}} Il y a eu une erreur de notre côté, on ne parvient pas à ajouter votre rôle de pays. Merci d'ouvrir un ticket de modmail à ce propos."
+        },
+        "confirm": {
+            "newRole": "{{emoji}} C'est bon ! Votre rôle de pays de résidence est maintenant **{{roleName}}**.",
+            "removed": "{{emoji}} C'est bon ! Vous n'avez désormais *plus* le rôle **{{roleName}}**."
+        }
+    },
     "eval": {
         "definition": {
             "description": "Vous permet d'exécuter du code NodeJS et affiche la valeur de retour",
@@ -16,14 +35,24 @@
     },
     "language": {
         "definition": {
-            "description": "Pour changer la langue du bot",
+            "description": "Pour changer votre rôle de langue natale",
             "options": {
-                "locale": { "description": "La langue dans laquelle le bot doit communiquer" }
+                "language": { "description": "Votre langue natale" }
             }
         },
-        "confirm":{
-            "title": "Préférence de langue",
-            "text": "{{emoji}} Merci ! Votre préférence a été enregistrée."
+        "error": {
+            "noNativeLanguageRole": "{{emoji}} Il y a eu une erreur de notre côté. Le bot ne semble pas être correctement configuré. Merci d'ouvrir un ticket de modmail à ce propos.",
+            "nativeLanguageRole": "{{emoji}} Vous ne pouvez pas choisir ou enlever le rôle **{{roleName}}** avec cette commande. Veuillez utiliser <id:customize> à la place.",
+            "noMember": "{{emoji}} Il y a eu une erreur de notre côté, on ne parvient pas à récupérer votre profil. Veuillez réessayer plus tard.",
+            "hasNativeLanguageRole": "{{emoji}} Vous ne pouvez pas choisir un autre rôle de langue natale tant que vous avez le rôle **{{roleName}}**. Veuillez utiliser <id:customize> si vous pensez que c'est une erreur et que vous ne devriez pas l'avoir, et essayez de nouveau.",
+            "noRole": "{{emoji}} Ce n'est pas une langue valide. Veillez à cliquer sur l'une des options qui apparaît lorsque vous tapez au clavier. S'il n'y a aucune option, ça veut hélas dire qu'il n'y a pas de rôle sur ce serveur pour votre langue.",
+            "couldNotRemoveNativeRole": "{{emoji}} Il y a eu une erreur de notre côté, on ne parvient pas à retirer votre rôle de langue natale. Merci d'ouvrir un ticket de modmail à ce propos.",
+            "couldNotRemoveOtherNativeRoles": "{{emoji}} Il y a eu une erreur de notre côté, on ne parvient pas à retirer vos autres rôles de langue natale. Merci d'ouvrir un ticket de modmail à ce propos.",
+            "couldNotAddRole": "{{emoji}} Il y a eu une erreur de notre côté, on ne parvient pas à ajouter votre rôle de langue natale. Merci d'ouvrir un ticket de modmail à ce propos."
+        },
+        "confirm": {
+            "newRole": "{{emoji}} C'est bon ! Votre rôle de langue natale est maintenant **{{roleName}}**.",
+            "removed": "{{emoji}} C'est bon ! Vous n'avez désormais *plus* le rôle **{{roleName}}**."
         }
     },
     "ping": {
@@ -34,9 +63,9 @@
     },
     "post": {
         "definition": {
-            "description": "Tu peux me faire poster des messages dans un canal texte !",
+            "description": "Vous pouvez me faire poster des messages dans un canal texte !",
             "options": {
-                "message": { "description": "Le message que tu veux que je poste" },
+                "message": { "description": "Le message que vous voulez que je poste" },
                 "channel": { "description": "Le canal dans lequel poster le message" },
                 "reply-to": { "description": "L'ID du message à répondre" }
             }
@@ -61,5 +90,28 @@
             "title": "Error",
             "description": "The message could not be posted: {{errorMessage}}"
         }
+    },
+    "preference": {
+        "definition": {
+            "description": "Pour changer les paramètres du bot",
+            "options": {
+                "language": { "description": "La langue dans laquelle le bot doit communiquer" }
+            }
+        },
+        "confirm":{
+            "title": "Préférence de langue",
+            "text": "{{emoji}} Merci ! Votre préférence a été enregistrée."
+        }
+    },
+    "setup": {
+        "definition": {
+            "description": "Pour changer les paramètres du serveur par-rapport au bot",
+            "options": {
+                "bot-log-channel": { "description": "Le canal dans lequel poster les logs du bot" },
+                "native-language-role": { "description": "Le rôle qui correspond à la langue qui est enseignée sur le serveur" }
+            }
+        },
+        "nothingChanged": "{{emoji}} Avez-vous oublier d'entrer des paramètres ? Il n'y avait rien à enregistrer.",
+        "confirm": "{{emoji}} Les nouveaux paramètres ont été enregistrés !"
     }
 }

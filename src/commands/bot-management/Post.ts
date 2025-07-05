@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, type GuildBasedChannel } from 'discord.js';
-import { InteractionContextType, MessageFlags } from 'discord-api-types/v10';
-import { type ApplicationCommandRegistry, container } from '@sapphire/framework';
+import { ChannelType, InteractionContextType, MessageFlags } from 'discord-api-types/v10';
+import { type ApplicationCommandRegistry } from '@sapphire/framework';
 import { fetchT } from '@sapphire/plugin-i18next';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import EmbedBuilder from '../../lib/EmbedBuilder.js';
@@ -17,7 +17,7 @@ export default class extends LocalizedCommand {
                 .setTitle(t('commands:post.unauthorized.title'))
                 .setDescription(t('commands:post.unauthorized.description'));
 
-            await interaction.editReply({ embeds: [embed] });
+            await interaction.editReply({ content: null, embeds: [embed] });
 
             return;
         }
@@ -57,7 +57,7 @@ export default class extends LocalizedCommand {
                 .setTitle(t('commands:post.invalidChannel.title'))
                 .setDescription(t('commands:post.invalidChannel.description'));
 
-            await interaction.editReply({ embeds: [embed] });
+            await interaction.editReply({ content: null, embeds: [embed] });
 
             return;
         }
@@ -75,19 +75,19 @@ export default class extends LocalizedCommand {
                 await channel.send(message)
             }
         } catch (error) {
-            container.logger.debug(error as Error);
+            this.container.logger.debug(error as Error);
             const embed = new EmbedBuilder(true)
                 .setTitle(t('commands:post.unknownError.title'))
                 .setDescription(t('commands:post.unknownError.title', { errorMessage: String(error) }));
 
-            await interaction.editReply({ embeds: [embed] });
+            await interaction.editReply({ content: null, embeds: [embed] });
         }
 
         const embed = new EmbedBuilder()
             .setTitle(t('commands:post.posted.title'))
             .setDescription(t('commands:post.posted.description'));
 
-        await interaction.editReply({ embeds: [embed] });
+        await interaction.editReply({ content: null, embeds: [embed] });
     }
 
     public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
@@ -102,6 +102,7 @@ export default class extends LocalizedCommand {
                 ))
                 .addChannelOption(builder => registerOptionDescriptions(this.name, builder
                     .setName('channel')
+                    .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
                 ))
                 .addStringOption(builder => registerOptionDescriptions(this.name, builder
                     .setName('reply-to')
@@ -116,6 +117,6 @@ export default class extends LocalizedCommand {
             .setTitle(t('commands:post.invalidMessageId.title'))
             .setDescription(t('commands:post.invalidMessageId.description'));
 
-        await interaction.editReply({ embeds: [embed] });
+        await interaction.editReply({ content: null, embeds: [embed] });
     }
 }

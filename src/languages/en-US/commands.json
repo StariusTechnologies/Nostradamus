@@ -1,4 +1,79 @@
 {
+    "addcountry": {
+        "definition": {
+            "description": "To create a new country role",
+            "options": {
+                "country": { "description": "The country to create a role for" }
+            }
+        },
+        "error": {
+            "alreadyExists": "{{emoji}} This country role already exists: {{role}}.",
+            "noSlotLeft": "{{emoji}} We already have the maximum amount of roles on this server.",
+            "couldNotCreateRole": "{{emoji}} An error occurred during the role creation on Discord."
+        },
+        "confirm": "{{emoji}} Done! The country role was created: {{role}}. **{{slotsTaken}}/250**"
+    },
+    "addcountryalias": {
+        "definition": {
+            "description": "To create a new country alias",
+            "options": {
+                "country": { "description": "The country to create an alias for" },
+                "alias": { "description": "The alias for the country" }
+            }
+        },
+        "error": {
+            "noRole": "{{emoji}} This is not a valid country. Please pick one of the options that appear when you type.",
+            "noEntry": "{{emoji}} This country does not seem to exist in the database. This should not happen."
+        },
+        "confirm": "{{emoji}} Done! The country alias was created for the role {{role}}."
+    },
+    "addlanguage": {
+        "definition": {
+            "description": "To create a new language role",
+            "options": {
+                "language": { "description": "The language to create a role for" }
+            }
+        },
+        "error": {
+            "alreadyExists": "{{emoji}} This language role already exists: {{role}}.",
+            "noSlotLeft": "{{emoji}} We already have the maximum amount of roles on this server.",
+            "couldNotCreateRole": "{{emoji}} An error occurred during the role creation on Discord."
+        },
+        "confirm": "{{emoji}} Done! The language role was created: {{role}}. **{{slotsTaken}}/250**"
+    },
+    "addlanguagealias": {
+        "definition": {
+            "description": "To create a new language alias",
+            "options": {
+                "language": { "description": "The language to create an alias for" },
+                "alias": { "description": "The alias for the language" }
+            }
+        },
+        "error": {
+            "noRole": "{{emoji}} This is not a valid language. Please pick one of the options that appear when you type.",
+            "noEntry": "{{emoji}} This language does not seem to exist in the database. This should not happen."
+        },
+        "confirm": "{{emoji}} Done! The language alias was created for the role {{role}}."
+    },
+    "country": {
+        "definition": {
+            "description": "To change your country of residence role",
+            "options": {
+                "country": { "description": "Your country of residence" }
+            }
+        },
+        "error": {
+            "noMember": "{{emoji}} There has been an error on our side, we cannot retrieve your profile. Please try again later.",
+            "noRole": "{{emoji}} This is not a valid country. Please pick one of the options that appear when you type. If there are no options, that unfortunately means there is no role on this server for your country.",
+            "couldNotRemoveCountryRole": "{{emoji}} There has been an error on our side, we were unable to remove your country role. Please contact modmail about this.",
+            "couldNotRemoveOtherCountryRoles": "{{emoji}} There has been an error on our side, we were unable to remove your other country roles. Please contact modmail about this.",
+            "couldNotAddRole": "{{emoji}} There has been an error on our side, we were unable to add your country role. Please contact modmail about this."
+        },
+        "confirm": {
+            "newRole": "{{emoji}} Done! Your country of residence role is now **{{roleName}}**.",
+            "removed": "{{emoji}} Done! You now *no longer* have the role **{{roleName}}**."
+        }
+    },
 	"eval": {
 		"definition": {
 			"description": "Allows you to execute nodejs code and display the return value",
@@ -14,18 +89,28 @@
             "resultFieldCrashed": "❌ Code crashed"
         }
 	},
-	"language": {
-		"definition": {
-			"description": "To change the language of the bot",
+    "language": {
+        "definition": {
+            "description": "To change your native language role",
             "options": {
-                "locale": { "description": "The language you want the bot to speak in" }
+                "language": { "description": "Your native language" }
             }
-		},
-        "confirm":{
-            "title": "Language preference",
-            "text": "{{emoji}} Thank you! Your preference has been saved."
+        },
+        "error": {
+            "noNativeLanguageRole": "{{emoji}} There has been an error on our side. The bot does not seem to be properly configured. Please contact modmail about this.",
+            "nativeLanguageRole": "{{emoji}} You cannot pick or try to remove the **{{roleName}}** role with this command. Please use <id:customize> instead.",
+            "noMember": "{{emoji}} There has been an error on our side, we cannot retrieve your profile. Please try again later.",
+            "hasNativeLanguageRole": "{{emoji}} You cannot pick another native language role as you already have the **{{roleName}}** role. Please use <id:customize> if you think this is a mistake and you should not have it, and try again.",
+            "noRole": "{{emoji}} This is not a valid language. Please pick one of the options that appear when you type. If there are no options, that unfortunately means there is no role on this server for your language.",
+            "couldNotRemoveNativeRole": "{{emoji}} There has been an error on our side, we were unable to remove your native language role. Please contact modmail about this.",
+            "couldNotRemoveOtherNativeRoles": "{{emoji}} There has been an error on our side, we were unable to remove your other native language roles. Please contact modmail about this.",
+            "couldNotAddRole": "{{emoji}} There has been an error on our side, we were unable to add your native language role. Please contact modmail about this."
+        },
+        "confirm": {
+            "newRole": "{{emoji}} Done! Your native language role is now **{{roleName}}**.",
+            "removed": "{{emoji}} Done! You now *no longer* have the role **{{roleName}}**."
         }
-	},
+    },
     "ping": {
         "definition": {
             "description": "Tests the latency"
@@ -61,5 +146,28 @@
             "title": "Error",
             "description": "The message could not be posted: {{errorMessage}}"
         }
+    },
+    "preference": {
+        "definition": {
+            "description": "To change the parameters of the bot",
+            "options": {
+                "locale": { "description": "The language you want the bot to speak in" }
+            }
+        },
+        "confirm":{
+            "title": "Language preference",
+            "text": "{{emoji}} Thank you! Your preference has been saved."
+        }
+    },
+    "setup": {
+        "definition": {
+            "description": "To change the guild settings for the bot",
+            "options": {
+                "bot-log-channel": { "description": "The channel in which to post bot logs" },
+                "native-language-role": { "description": "The role that corresponds to the language that's taught on the server" }
+            }
+        },
+        "nothingChanged": "{{emoji}} Did you forget to input a setting? There was nothing to save.",
+        "confirm": "{{emoji}} The new settings have been saved!"
     }
 }

@@ -1,12 +1,9 @@
 import {
-    BitField,
     CommandInteraction,
     type InteractionCallbackResponse,
-    type InteractionReplyOptions,
     type InteractionResponse,
-    type Message,
+    type Message
 } from 'discord.js';
-import { MessageFlags } from 'discord-api-types/v10';
 
 export class InteractionManager
 {
@@ -17,47 +14,44 @@ export class InteractionManager
         this.interaction = interaction;
     }
 
+    public async deferReply(...args: Parameters<CommandInteraction['deferReply']>) {
+        if (this.interaction.deferred) {
+            return;
+        }
+
+        await this.interaction.deferReply(...args);
+
+        return this;
+    }
+
     public async reply(
-        ...replyArguments: Parameters<CommandInteraction['reply']>
+        ...args: Parameters<CommandInteraction['reply']>
     ): Promise<InteractionCallbackResponse | InteractionResponse | Message> {
         return this.interaction.replied
-            ? this.replyReplied(...replyArguments)
-            : this.replyNotReplied(...replyArguments);
+            ? this.replyReplied(...args)
+            : this.replyNotReplied(...args);
     }
 
     public async edit(
-        ...editArguments: Parameters<Message['edit']>
+        ...args: Parameters<Message['edit']>
     ): Promise<InteractionResponse | Message> {
         if (!this.followedUpMessage) {
-            return this.interaction.editReply(...editArguments);
+            return this.interaction.editReply(...args);
         }
 
-        return this.followedUpMessage.edit(...editArguments);
+        return this.followedUpMessage.edit(...args);
     }
 
     private async replyNotReplied(
-        ...replyArguments: Parameters<CommandInteraction['reply']>
+        ...args: Parameters<CommandInteraction['reply']>
     ): Promise<InteractionCallbackResponse | InteractionResponse | Message> {
-        return this.interaction.reply(...replyArguments);
+        return this.interaction.reply(...args);
     }
 
     private async replyReplied(
-        ...replyArguments: Parameters<CommandInteraction['reply']>
+        ...args: Parameters<CommandInteraction['reply']>
     ): Promise<InteractionCallbackResponse | InteractionResponse | Message> {
-        const options = typeof replyArguments[0] === 'string' ? {} : replyArguments[0] as InteractionReplyOptions;
-        const flags = new BitField(options.flags);
-        const replyIsEphemeral = options.ephemeral || flags.has(MessageFlags.Ephemeral);
-
-        if (this.interaction.ephemeral && replyIsEphemeral) {
-            if (flags.has(MessageFlags.Ephemeral)) {
-                flags.remove(MessageFlags.Ephemeral);
-                (replyArguments[0] as InteractionReplyOptions).flags = flags;
-            }
-
-            return this.interaction.editReply(...replyArguments as Parameters<CommandInteraction['editReply']>);
-        }
-
-        this.followedUpMessage = await this.interaction.followUp(...replyArguments);
+        this.followedUpMessage = await this.interaction.followUp(...args);
 
         return this.followedUpMessage;
     }

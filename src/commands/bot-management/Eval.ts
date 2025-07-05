@@ -5,17 +5,17 @@ import { ApplicationCommandRegistry, container } from '@sapphire/framework';
 import { fetchT } from '@sapphire/plugin-i18next';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import EmbedBuilder from '../../lib/EmbedBuilder.js';
-import { createErrorEmbed } from '../../util/EmbedUtil.js';
 import { registerCommandDescriptions, registerOptionDescriptions } from '../../lib/i18n/LanguageManager.js';
+import { InteractionManager } from '../../lib/InteractionManager.js';
 
 export default class extends LocalizedCommand {
     public override async chatInputRun(interaction: ChatInputCommandInteraction): Promise<void> {
+        const interactionManager = new InteractionManager(interaction);
+
         const t = await fetchT(interaction);
 
         if (interaction.user.id !== process.env.OWNER) {
-            await interaction.reply({ embeds: [createErrorEmbed(
-                t('commands:eval.forbidden')
-            )], flags: MessageFlags.Ephemeral });
+            await interactionManager.reply({ content: t('commands:eval.forbidden'), flags: MessageFlags.Ephemeral });
 
             return;
         }
@@ -42,7 +42,7 @@ export default class extends LocalizedCommand {
 
         embed.addFields([{ name: t('commands:eval.embed.resultFieldName'), value: output.toString() }]);
 
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+        await interactionManager.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     }
 
     public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

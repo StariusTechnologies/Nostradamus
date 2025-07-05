@@ -1,8 +1,9 @@
 import type { Client } from 'discord.js';
 
 export const Emojis = {
-    Francophonie: '<a:francophonie:1390707250297049260>',
     Anglophonie: '<a:anglophonie:1390707262586228927>',
+    Francophonie: '<a:francophonie:1390707250297049260>',
+    RainbowSheep: '<a:rainbowsheep:1391008257509822515>',
 };
 
 export function getEmojiURL(emoji: string) {
