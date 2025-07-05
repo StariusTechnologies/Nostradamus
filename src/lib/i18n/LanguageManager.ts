@@ -21,9 +21,9 @@ export const Languages: Partial<Record<Locale, string>> = {
     [Locale.EnglishUS]: 'English',
     [Locale.French]: 'Français',
 } as const;
-export const LanguageEmoji: Partial<Record<Locale, string>> = {
-    [Locale.EnglishUS]: Emojis.Anglophonie,
-    [Locale.French]: Emojis.Francophonie,
+export const LanguageEmoji: Partial<Record<Locale, () => string>> = {
+    [Locale.EnglishUS]: () => Emojis.Anglophonie,
+    [Locale.French]: () => Emojis.Francophonie,
 }
 
 export const exists = (key: string) =>
@@ -34,7 +34,7 @@ export function multipleT(locales: Locale[], key: string, glue = ' / ', prependE
         .filter(locale => Object.keys(Languages).includes(locale))
         .map(locale => ({ t: container.i18n.getT(locale), locale }));
     const translations = tFunctions.map(({ t, locale }: { t: TFunction, locale: Locale }) => {
-        const prefix = prependEmojis ? `${LanguageEmoji[locale]} ` : '';
+        const prefix = prependEmojis ? `${LanguageEmoji[locale]!()} ` : '';
 
         return `${prefix}${t(key)}`;
     });

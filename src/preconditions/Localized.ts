@@ -58,7 +58,7 @@ export class Localized extends Precondition {
         const t = container.i18n.getT(selectedLocale);
         const confirmText = t(
             'preconditions:localized.configuration.confirm',
-            { emoji: LanguageEmoji[selectedLocale as Locale] }
+            { emoji: LanguageEmoji[selectedLocale as Locale]!() }
         );
 
         await interaction.editReply({

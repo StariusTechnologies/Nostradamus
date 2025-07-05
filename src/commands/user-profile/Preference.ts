@@ -17,7 +17,7 @@ export default class extends Command {
         const selectedLocale = interaction.options.getString('language', true);
         const t = this.container.i18n.getT(selectedLocale);
         const title = t('commands:preference.confirm.title');
-        const text = t('commands:preference.confirm.text', { emoji: LanguageEmoji[selectedLocale as Locale] });
+        const text = t('commands:preference.confirm.text', { emoji: LanguageEmoji[selectedLocale as Locale]!() });
 
         await this.container.prisma.userPreference.upsert({
             create: { idUser: interaction.user.id, locale: selectedLocale },
