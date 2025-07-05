@@ -15,7 +15,7 @@ export class InteractionManager
     }
 
     public async deferReply(...args: Parameters<CommandInteraction['deferReply']>) {
-        if (this.interaction.deferred) {
+        if (this.interaction.deferred || this.interaction.replied) {
             return;
         }
 
