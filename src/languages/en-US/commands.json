@@ -1,0 +1,65 @@
+{
+	"eval": {
+		"definition": {
+			"description": "Allows you to execute nodejs code and display the return value",
+            "options": {
+                "code": { "description": "The NodeJS code you want to execute" }
+            }
+		},
+		"forbidden": "You do not have the right to execute this command.",
+        "embed":{
+            "title": "✅ Code executed",
+            "codeFieldName": "Executed code",
+            "resultFieldName": "Result",
+            "resultFieldCrashed": "❌ Code crashed"
+        }
+	},
+	"language": {
+		"definition": {
+			"description": "To change the language of the bot",
+            "options": {
+                "locale": { "description": "The language you want the bot to speak in" }
+            }
+		},
+        "confirm":{
+            "title": "Language preference",
+            "text": "{{emoji}} Thank you! Your preference has been saved."
+        }
+	},
+    "ping": {
+        "definition": {
+            "description": "Tests the latency"
+        },
+        "response": "Pong! Took me {{latency}}ms."
+    },
+    "post": {
+        "definition": {
+            "description": "You can make me post messages in a text chat!",
+            "options": {
+                "message": { "description": "The message you want me to post" },
+                "channel": { "description": "The channel in which to post the message" },
+                "reply-to": { "description": "The message ID to reply to" }
+            }
+        },
+        "invalidChannel": {
+            "title": "Invalid channel",
+            "description": "You have to specify a text-based channel"
+        },
+        "invalidMessageId": {
+            "title": "Invalid message ID",
+            "description": "The message ID you specified for the reply option is invalid"
+        },
+        "posted": {
+            "title": "Posted",
+            "description": "The message has been posted"
+        },
+        "unauthorized": {
+            "title": "Unauthorized",
+            "description": "You do not have the right to execute this command."
+        },
+        "unknownError": {
+            "title": "Error",
+            "description": "The message could not be posted: {{errorMessage}}"
+        }
+    }
+}

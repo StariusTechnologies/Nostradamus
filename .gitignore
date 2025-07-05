@@ -1,0 +1,12 @@
+node_modules
+.idea
+.vscode
+*.iml
+dist
+temp
+src/listeners/Raw.ts
+*.tsbuildinfo
+
+# Keep environment variables out of version control
+*.env
+!.sample.env

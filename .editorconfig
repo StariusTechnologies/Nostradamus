@@ -1,0 +1,18 @@
+# https://editorconfig.org
+
+root = true
+
+[*.{js,ts,md,json,yaml,yml}]
+indent_style = space
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+indent_size = 4
+
+[package*.json]
+indent_size = 2
+
+[{.editorconfig,.gitignore,.npmignore}]
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true

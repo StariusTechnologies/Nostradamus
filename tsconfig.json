@@ -1,0 +1,21 @@
+{
+    "extends": [
+        "@sapphire/ts-config",
+        "@sapphire/ts-config/extra-strict",
+        "@sapphire/ts-config/decorators",
+        "@sapphire/ts-config/verbatim"
+    ],
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "removeComments": true,
+        "declaration": false,
+        "declarationMap": false,
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "include": ["src"]
+}

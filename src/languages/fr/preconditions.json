@@ -1,0 +1,9 @@
+{
+	"localized": {
+        "configuration": {
+            "title": "Préférence de langue",
+            "text": "Avant tout, dans quelle langue souhaitez-vous continuer ?",
+            "confirm": "{{emoji}} Merci ! Votre préférence a été enregistrée."
+        }
+	}
+}

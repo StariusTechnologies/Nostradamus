@@ -1,0 +1,65 @@
+{
+    "eval": {
+        "definition": {
+            "description": "Vous permet d'exécuter du code NodeJS et affiche la valeur de retour",
+            "options": {
+                "code": { "description": "Le code NodeJS que vous voulez exécuter" }
+            }
+        },
+        "forbidden": "Vous n'avez pas le droit d'exécuter cette commande.",
+        "embed":{
+            "title": "✅ Code exécuté",
+            "codeFieldName": "Code exécuté",
+            "resultFieldName": "Résultat",
+            "resultFieldCrashed": "❌ Le code a planté"
+        }
+    },
+    "language": {
+        "definition": {
+            "description": "Pour changer la langue du bot",
+            "options": {
+                "locale": { "description": "La langue dans laquelle le bot doit communiquer" }
+            }
+        },
+        "confirm":{
+            "title": "Préférence de langue",
+            "text": "{{emoji}} Merci ! Votre préférence a été enregistrée."
+        }
+    },
+    "ping": {
+        "definition": {
+            "description": "Teste la latence"
+        },
+        "response": "Pong! Ça m'a pris {{latency}}ms."
+    },
+    "post": {
+        "definition": {
+            "description": "Tu peux me faire poster des messages dans un canal texte !",
+            "options": {
+                "message": { "description": "Le message que tu veux que je poste" },
+                "channel": { "description": "Le canal dans lequel poster le message" },
+                "reply-to": { "description": "L'ID du message à répondre" }
+            }
+        },
+        "invalidChannel": {
+            "title": "Invalid channel",
+            "description": "You have to specify a text-based channel"
+        },
+        "invalidMessageId": {
+            "title": "Invalid message ID",
+            "description": "The message ID you specified for the reply option is invalid"
+        },
+        "posted": {
+            "title": "Posted",
+            "description": "The message has been posted"
+        },
+        "unauthorized": {
+            "title": "Unauthorized",
+            "description": "You do not have the right to execute this command."
+        },
+        "unknownError": {
+            "title": "Error",
+            "description": "The message could not be posted: {{errorMessage}}"
+        }
+    }
+}
