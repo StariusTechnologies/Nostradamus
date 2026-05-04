@@ -70,7 +70,7 @@ export class Bootstrap {
             ],
             i18n: {
                 fetchLanguage: async (context: InternationalizationContext) => {
-                    let language = 'en-US';
+                    const language = 'en-US';
 
                     if (!context.user?.id) {
                         return language;

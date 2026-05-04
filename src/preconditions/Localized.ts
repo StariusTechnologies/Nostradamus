@@ -6,7 +6,7 @@ import {
     ContextMenuCommandInteraction,
     type MessageActionRowComponentBuilder,
     MessageFlags,
-    StringSelectMenuBuilder,
+    StringSelectMenuBuilder
 } from 'discord.js';
 import { LanguageEmoji, Languages, multipleT } from '../lib/i18n/LanguageManager.js';
 import { Locale } from 'discord-api-types/v10';

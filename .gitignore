@@ -2,6 +2,7 @@ node_modules
 .idea
 .vscode
 *.iml
+.claude
 dist
 temp
 src/listeners/Raw.ts

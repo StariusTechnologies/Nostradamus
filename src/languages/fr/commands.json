@@ -113,5 +113,12 @@
         },
         "nothingChanged": "{{emoji}} Avez-vous oublier d'entrer des paramètres ? Il n'y avait rien à enregistrer.",
         "confirm": "{{emoji}} Les nouveaux paramètres ont été enregistrés !"
+    },
+    "sujet": {
+        "definition": {
+            "description": "Obtenir un sujet de conversation"
+        },
+        "title": "{{emoji}} Voici un sujet de discussion",
+        "noTopics": "{{emoji}} Aucun sujet n'est disponible pour le moment."
     }
 }

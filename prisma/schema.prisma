@@ -77,3 +77,14 @@ model CountryAlias {
     @@id(id)
     @@index(alias)
 }
+
+model Topic {
+    id        Int    @default(autoincrement())
+    locale    String @db.VarChar(10)
+    text      String @db.Text
+    postCount Int    @default(0)
+
+    @@id(id)
+    @@index([locale, postCount])
+    @@map("topic")
+}

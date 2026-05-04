@@ -169,5 +169,12 @@
         },
         "nothingChanged": "{{emoji}} Did you forget to input a setting? There was nothing to save.",
         "confirm": "{{emoji}} The new settings have been saved!"
+    },
+    "sujet": {
+        "definition": {
+            "description": "Get a conversation topic to discuss"
+        },
+        "title": "{{emoji}} Here's a topic to discuss",
+        "noTopics": "{{emoji}} There are no topics available at the moment."
     }
 }
