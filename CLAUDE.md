@@ -46,7 +46,9 @@ Entry point is `src/index.ts`, which instantiates the `Bootstrap` singleton (`sr
 
 ### Database (Prisma + MySQL)
 
-Schema in `prisma/schema.prisma`. Five models today: `Settings` (per-guild key/value config), `UserPreference` (per-user locale), `Language` + `LanguageAlias`, `Country` + `CountryAlias`. The `Settings` table is the canonical place for per-guild configuration — V5 deliberately avoided V3's hardcoded `config.json` of role/channel IDs.
+Schema in `prisma/schema.prisma`. Models include `Settings` (per-guild key/value config), `UserPreference` (per-user locale), `Language` + `LanguageAlias`, `Country` + `CountryAlias`, `Topic`. The `Settings` table is the canonical place for per-guild configuration — V5 deliberately avoided V3's hardcoded `config.json` of role/channel IDs.
+
+**Every model must have `@@map(...)` with a lowercase / snake_case table name** — single-word lowercase (e.g. `@@map("settings")`), multi-word snake_case (e.g. `@@map("user_preference")`). This is non-negotiable: dev runs on Windows MySQL where `lower_case_table_names=1` folds table identifiers to lowercase, while prod runs on Linux MySQL where the original case is preserved. Without `@@map` the table ends up named differently on each host and Prisma reports drift. Adding `@@map` from the start avoids needing a follow-up rename migration; corresponding indexes and foreign keys auto-derive their names from the `@@map` value, so they stay consistent too. Same rule applies for any future column-level renames via `@map`.
 
 Settings access goes through `src/lib/Settings.ts`:
 
