@@ -2,7 +2,7 @@ import { ApplicationCommandRegistries, container, RegisterBehavior } from '@sapp
 import '@sapphire/plugin-i18next/register';
 import { Bootstrap } from './setup/Bootstrap.js';
 
-ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite);
+ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
 
 const bootstrap = new Bootstrap();
 
