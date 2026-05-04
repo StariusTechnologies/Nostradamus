@@ -89,11 +89,33 @@ The `fetchLanguage` callback in `Bootstrap.ts` is the read side of this — it r
 
 ### Logger module (`src/lib/Logger.ts`)
 
-Distinct from `container.logger` (Sapphire's stdout logger). The functions in `Logger.ts` (`log`, `warn`, `error`, `success`, `notice`) write to the configured guild log channel (`SettingKey.BotLogChannel`) as colored embeds AND log to stdout. Pass `(guildId, message, footer?)`. Commands typically pass `this.logFooter` as the footer. If no log channel is configured for the guild, only the stdout side runs — there is no error.
+Distinct from `container.logger` (Sapphire's stdout logger). The functions in `Logger.ts` (`log`, `warn`, `error`, `success`, `notice`) write to the configured guild log channel (`SettingKey.BotLogChannel`) as colored Components V2 containers AND log to stdout. Pass `(guildId, message, footer?)`. Commands typically pass `this.logFooter` as the footer. If no log channel is configured for the guild, only the stdout side runs — there is no error. The level-based accent colors (info/warn/error/success/notice) carry meaning, so they stay even though the rest of the bot defaults to no color for trivial responses.
+
+### Components V2 — no embeds
+
+**Embeds are banned.** Discord embeds have known accessibility problems and the bot was migrated entirely to Components V2. There is no `EmbedBuilder` in the codebase and no helper for one — don't reintroduce embeds. Use V2 components (`ContainerBuilder`, `TextDisplayBuilder`, `SectionBuilder`, `SeparatorBuilder`, etc.) instead.
+
+`src/lib/Components.ts` exports three colored helpers that wrap a single text in a `ContainerBuilder` with an accent color. Each returns `{ components: [container] }` ready to spread into `interactionManager.edit()` / `reply()`:
+
+- `Components.error(text)` — red, for failures (rough convention: `❌` emoji in the message).
+- `Components.confirm(text)` — green, for completed actions (rough convention: rainbow-sheep emoji).
+- `Components.info(text)` — blue, for informational rich content.
+
+**Color is contextual, not default.** A bare string passed to `interactionManager.edit/reply/followUp` is auto-wrapped as a single `TextDisplayBuilder` with no container, no color — that is the right shape for trivial confirmations or status text. Only reach for `Components.error/confirm/info` (or build a custom `ContainerBuilder`) when a color is actually meaningful (errors, success, structured info).
+
+**Critical gotcha:** the `IsComponentsV2` flag (`MessageFlags.IsComponentsV2`, bit 1 << 15) must appear in the request body of *every* message operation that uses V2 components — defer, reply, follow-up, edit, and any direct `channel.send`. Setting it on defer alone is **not** enough; Discord's edit-payload validator inspects the request body itself, and a V2 components array without the flag in that same payload is rejected with `Value of field "type" must be one of (1,)`. `InteractionManager` handles this for you — but if you call `channel.send`, `webhook.send`, or any other Discord.js sender directly with V2 components, you must pass `flags: MessageFlags.IsComponentsV2` (OR'd with whatever else you need) yourself. See `Logger.ts` for an example.
 
 ### InteractionManager (`src/lib/InteractionManager.ts`)
 
-Wraps `CommandInteraction` to make defer/reply/edit idempotent and to follow up automatically once a reply has already been sent. Used pervasively in commands. Pattern: instantiate at the top of `chatInputRun`, `await interactionManager.deferReply({ flags: MessageFlags.Ephemeral })`, then `interactionManager.edit(...)` for the final response. Use this rather than calling `interaction.reply` / `interaction.editReply` / `interaction.followUp` directly.
+Wraps `CommandInteraction` to make defer/reply/edit/followUp idempotent and Components V2-correct. Pattern: instantiate at the top of `chatInputRun`, `await interactionManager.deferReply()` (optionally with `{ flags: MessageFlags.Ephemeral }`), then `interactionManager.edit(...)` for the final response. Use this rather than calling `interaction.reply` / `interaction.editReply` / `interaction.followUp` directly so the V2 flag is applied consistently.
+
+What InteractionManager does for you:
+
+- `IsComponentsV2` is OR'd into the flags of every defer, reply, edit, and follow-up. You can pass `Ephemeral` (or any other flag) freely — they combine with the V2 flag, they don't replace it.
+- A bare string passed to `reply` / `edit` / `followUp` is auto-wrapped as `[new TextDisplayBuilder().setContent(text)]`. Existing call sites doing `interactionManager.edit(t('commands:foo.confirm'))` keep working without changes; they just render as an uncolored text block.
+- An options object passed in is shallow-cloned, the V2 flag merged into its `flags`, and forwarded to discord.js. Don't pass `content` or `embeds` — both are forbidden by the V2 flag and Discord will reject the request.
+- `deferReply` is idempotent — if the interaction is already deferred or replied, it short-circuits.
+- After an initial reply, subsequent `reply` calls automatically become `followUp`s and `edit` targets the follow-up message.
 
 ### Bot emojis (`src/util/Emojis.ts`)
 
