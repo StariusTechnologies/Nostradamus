@@ -9,10 +9,14 @@ import {
     registerOptionDescriptions
 } from '../../lib/i18n/LanguageManager.js';
 import { Command } from '../../lib/Command.js';
+import { InteractionManager } from '../../lib/InteractionManager.js';
+import { Components } from '../../lib/Components.js';
 
 export default class extends Command {
     public override async chatInputRun(interaction: ChatInputCommandInteraction): Promise<void> {
-        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        const interactionManager = new InteractionManager(interaction);
+
+        await interactionManager.deferReply({ flags: MessageFlags.Ephemeral });
 
         const selectedLocale = interaction.options.getString('language', true);
         const t = this.container.i18n.getT(selectedLocale);
@@ -25,7 +29,7 @@ export default class extends Command {
             where: { idUser: interaction.user.id },
         });
 
-        await interaction.editReply({ content: `## ${title}\n${text}` });
+        await interactionManager.edit(Components.confirm(`## ${title}\n${text}`));
     }
 
     public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

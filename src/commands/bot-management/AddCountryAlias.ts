@@ -7,6 +7,7 @@ import { registerCommandDescriptions, registerOptionDescriptions } from '../../l
 import { Emojis } from '../../util/Emojis.js';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
+import { Components } from '../../lib/Components.js';
 
 export default class extends LocalizedCommand {
     public override async chatInputRun(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -21,7 +22,9 @@ export default class extends LocalizedCommand {
         const role = guild.roles.cache.get(selectedRoleId);
 
         if (!role) {
-            await interactionManager.edit(t('commands:addcountryalias.error.noRole', { emoji: '❌' }));
+            await interactionManager.edit(Components.error(
+                t('commands:addcountryalias.error.noRole', { emoji: '❌' })
+            ));
 
             return;
         }
@@ -29,7 +32,9 @@ export default class extends LocalizedCommand {
         const countryEntry = await this.container.prisma.country.findUnique({ where: { idRole: role.id } });
 
         if (!countryEntry) {
-            await interactionManager.edit(t('commands:addcountryalias.error.noEntry', { emoji: '❌' }));
+            await interactionManager.edit(Components.error(
+                t('commands:addcountryalias.error.noEntry', { emoji: '❌' })
+            ));
 
             return;
         }
@@ -38,9 +43,9 @@ export default class extends LocalizedCommand {
             data: { idCountry: countryEntry.id, alias },
         });
 
-        await interactionManager.edit(
+        await interactionManager.edit(Components.confirm(
             t('commands:addcountryalias.confirm', { emoji: Emojis.RainbowSheep, role: `<@&${role.id}>` })
-        );
+        ));
     }
 
     public override async autocompleteRun(interaction: AutocompleteInteraction) {

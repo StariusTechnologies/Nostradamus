@@ -6,7 +6,8 @@ import {
     ContextMenuCommandInteraction,
     type MessageActionRowComponentBuilder,
     MessageFlags,
-    StringSelectMenuBuilder
+    StringSelectMenuBuilder,
+    TextDisplayBuilder
 } from 'discord.js';
 import { LanguageEmoji, Languages, multipleT } from '../lib/i18n/LanguageManager.js';
 import { Locale } from 'discord-api-types/v10';
@@ -41,11 +42,11 @@ export class Localized extends Precondition {
         const actionRow = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(localeInput);
         const title = multipleT(locales, 'preconditions:localized.configuration.title');
         const text = multipleT(locales, 'preconditions:localized.configuration.text', '\n', true);
+        const titleDisplay = new TextDisplayBuilder().setContent(`## ${title}\n${text}`);
 
         const interactionResponse = await interaction.reply({
-            content: `## ${title}\n${text}`,
-            components: [actionRow],
-            flags: MessageFlags.Ephemeral,
+            components: [titleDisplay, actionRow],
+            flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2,
         });
 
         const selection = await interactionResponse.awaitMessageComponent({
@@ -61,9 +62,10 @@ export class Localized extends Precondition {
             { emoji: LanguageEmoji[selectedLocale as Locale]!() }
         );
 
+        const confirmDisplay = new TextDisplayBuilder().setContent(`## ${title}\n${confirmText}`);
+
         await interaction.editReply({
-            content: `## ${title}\n${confirmText}`,
-            components: [],
+            components: [confirmDisplay],
         });
 
         await this.container.prisma.userPreference.create({

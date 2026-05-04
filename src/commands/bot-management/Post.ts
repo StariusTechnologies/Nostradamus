@@ -1,23 +1,24 @@
-import { ChatInputCommandInteraction, type GuildBasedChannel } from 'discord.js';
+import type { ChatInputCommandInteraction, GuildBasedChannel } from 'discord.js';
 import { ChannelType, InteractionContextType, MessageFlags } from 'discord-api-types/v10';
 import { type ApplicationCommandRegistry } from '@sapphire/framework';
 import { fetchT } from '@sapphire/plugin-i18next';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
-import EmbedBuilder from '../../lib/EmbedBuilder.js';
 import { registerCommandDescriptions, registerOptionDescriptions } from '../../lib/i18n/LanguageManager.js';
+import { InteractionManager } from '../../lib/InteractionManager.js';
+import { Components } from '../../lib/Components.js';
 
 export default class extends LocalizedCommand {
     public override async chatInputRun(interaction: ChatInputCommandInteraction): Promise<void> {
-        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        const interactionManager = new InteractionManager(interaction);
+
+        await interactionManager.deferReply({ flags: MessageFlags.Ephemeral });
 
         const t = await fetchT(interaction);
 
         if (interaction.user.id !== process.env.OWNER) {
-            const embed = new EmbedBuilder(true)
-                .setTitle(t('commands:post.unauthorized.title'))
-                .setDescription(t('commands:post.unauthorized.description'));
-
-            await interaction.editReply({ content: null, embeds: [embed] });
+            await interactionManager.edit(Components.error(
+                `## ${t('commands:post.unauthorized.title')}\n${t('commands:post.unauthorized.description')}`
+            ));
 
             return;
         }
@@ -27,14 +28,14 @@ export default class extends LocalizedCommand {
         let channel: GuildBasedChannel | null = null;
 
         if (replyTo && !/\d{16,18}(-\d{16,18})?/u.test(replyTo)) {
-            await this.sendInvalidMessageIdError(interaction);
+            await this.sendInvalidMessageIdError(interactionManager, t);
 
             return;
         } else if (replyTo && /\d{16,18}-\d{16,18}/u.test(replyTo)) {
             const [channelId, messageId] = replyTo.split('-');
 
             if (!guild.channels.cache.has(channelId) || !guild.channels.cache.get(channelId)!.isTextBased()) {
-                await this.sendInvalidMessageIdError(interaction);
+                await this.sendInvalidMessageIdError(interactionManager, t);
 
                 return;
             }
@@ -53,17 +54,15 @@ export default class extends LocalizedCommand {
         const message = interaction.options.getString('message', true);
 
         if (!channel || !channel.isTextBased()) {
-            const embed = new EmbedBuilder(true)
-                .setTitle(t('commands:post.invalidChannel.title'))
-                .setDescription(t('commands:post.invalidChannel.description'));
-
-            await interaction.editReply({ content: null, embeds: [embed] });
+            await interactionManager.edit(Components.error(
+                `## ${t('commands:post.invalidChannel.title')}\n${t('commands:post.invalidChannel.description')}`
+            ));
 
             return;
         }
 
         if (replyTo && !repliedMessage) {
-            await this.sendInvalidMessageIdError(interaction);
+            await this.sendInvalidMessageIdError(interactionManager, t);
 
             return;
         }
@@ -72,25 +71,24 @@ export default class extends LocalizedCommand {
             if (repliedMessage) {
                 await repliedMessage.reply(message);
             } else {
-                await channel.send(message)
+                await channel.send(message);
             }
         } catch (error) {
             this.container.logger.debug(error as Error);
-            const embed = new EmbedBuilder(true)
-                .setTitle(t('commands:post.unknownError.title'))
-                .setDescription(t('commands:post.unknownError.title', { errorMessage: String(error) }));
+            await interactionManager.edit(Components.error(
+                `## ${t('commands:post.unknownError.title')}\n`
+                + `${t('commands:post.unknownError.description', { errorMessage: String(error) })}`
+            ));
 
-            await interaction.editReply({ content: null, embeds: [embed] });
+            return;
         }
 
-        const embed = new EmbedBuilder()
-            .setTitle(t('commands:post.posted.title'))
-            .setDescription(t('commands:post.posted.description'));
-
-        await interaction.editReply({ content: null, embeds: [embed] });
+        await interactionManager.edit(Components.confirm(
+            `## ${t('commands:post.posted.title')}\n${t('commands:post.posted.description')}`
+        ));
     }
 
-    public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    public override registerApplicationCommands(registry: ApplicationCommandRegistry): void {
         registry.registerChatInputCommand(command =>
             registerCommandDescriptions(command
                 .setName(this.name)
@@ -111,12 +109,12 @@ export default class extends LocalizedCommand {
         );
     }
 
-    private async sendInvalidMessageIdError(interaction: ChatInputCommandInteraction): Promise<void> {
-        const t = await fetchT(interaction);
-        const embed = new EmbedBuilder(true)
-            .setTitle(t('commands:post.invalidMessageId.title'))
-            .setDescription(t('commands:post.invalidMessageId.description'));
-
-        await interaction.editReply({ content: null, embeds: [embed] });
+    private async sendInvalidMessageIdError(
+        interactionManager: InteractionManager,
+        t: Awaited<ReturnType<typeof fetchT>>
+    ): Promise<void> {
+        await interactionManager.edit(Components.error(
+            `## ${t('commands:post.invalidMessageId.title')}\n${t('commands:post.invalidMessageId.description')}`
+        ));
     }
 }

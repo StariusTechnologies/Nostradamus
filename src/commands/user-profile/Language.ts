@@ -6,6 +6,7 @@ import { fetchT } from '@sapphire/plugin-i18next';
 import { Emojis } from '../../util/Emojis.js';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
+import { Components } from '../../lib/Components.js';
 import { InteractionContextType } from 'discord-api-types/v10';
 import { error } from '../../lib/Logger.js';
 import { getSetting, SettingKey } from '../../lib/Settings.js';
@@ -29,16 +30,18 @@ export default class extends LocalizedCommand {
                 this.logFooter
             );
 
-            await interactionManager.edit(t('commands:language.error.noNativeLanguageRole', { emoji: '❌' }));
+            await interactionManager.edit(Components.error(
+                t('commands:language.error.noNativeLanguageRole', { emoji: '❌' })
+            ));
 
             return;
         }
 
         if (selectedRoleId === nativeLanguageRole.id) {
-            await interactionManager.edit(t(
+            await interactionManager.edit(Components.error(t(
                 'commands:language.error.nativeLanguageRole',
                 { emoji: '❌', roleName: nativeLanguageRole.name }
-            ));
+            )));
 
             return;
         }
@@ -47,16 +50,18 @@ export default class extends LocalizedCommand {
 
         if (!member) {
             error(guild.id, `Could not retrieve member ${interaction.user.id}`, this.logFooter);
-            await interactionManager.edit(t('commands:language.error.noMember', { emoji: '❌' }));
+            await interactionManager.edit(Components.error(
+                t('commands:language.error.noMember', { emoji: '❌' })
+            ));
 
             return;
         }
 
         if (member.roles.cache.has(nativeLanguageRole.id)) {
-            await interactionManager.edit(t(
+            await interactionManager.edit(Components.error(t(
                 'commands:language.error.hasNativeLanguageRole',
                 { emoji: '❌', roleName: nativeLanguageRole.name }
-            ));
+            )));
 
             return;
         }
@@ -64,7 +69,9 @@ export default class extends LocalizedCommand {
         const role = guild.roles.cache.get(selectedRoleId);
 
         if (!role) {
-            await interactionManager.edit(t('commands:language.error.noRole', { emoji: '❌' }));
+            await interactionManager.edit(Components.error(
+                t('commands:language.error.noRole', { emoji: '❌' })
+            ));
 
             return;
         }
@@ -80,16 +87,16 @@ export default class extends LocalizedCommand {
                 );
 
                 this.container.logger.error(err);
-                await interactionManager.edit(
+                await interactionManager.edit(Components.error(
                     t('commands:language.error.couldNotRemoveNativeRole', { emoji: '❌' })
-                );
+                ));
 
                 return;
             }
 
-            await interactionManager.edit(
+            await interactionManager.edit(Components.confirm(
                 t('commands:language.confirm.removed', { emoji: Emojis.RainbowSheep, roleName: role.name })
-            );
+            ));
 
             return;
         }
@@ -112,9 +119,9 @@ export default class extends LocalizedCommand {
                 );
 
                 this.container.logger.error(err);
-                await interactionManager.edit(
+                await interactionManager.edit(Components.error(
                     t('commands:language.error.couldNotRemoveOtherNativeRoles', { emoji: '❌' })
-                );
+                ));
 
                 return;
             }
@@ -130,16 +137,16 @@ export default class extends LocalizedCommand {
             );
 
             this.container.logger.error(err);
-            await interactionManager.edit(
+            await interactionManager.edit(Components.error(
                 t('commands:language.error.couldNotAddRole', { emoji: '❌' })
-            );
+            ));
 
             return;
         }
 
-        await interactionManager.edit(
+        await interactionManager.edit(Components.confirm(
             t('commands:language.confirm.newRole', { emoji: Emojis.RainbowSheep, roleName: role.name })
-        );
+        ));
     }
 
     public override async autocompleteRun(interaction: AutocompleteInteraction) {

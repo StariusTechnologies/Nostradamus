@@ -6,6 +6,7 @@ import { fetchT } from '@sapphire/plugin-i18next';
 import { Emojis } from '../../util/Emojis.js';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
+import { Components } from '../../lib/Components.js';
 import { InteractionContextType } from 'discord-api-types/v10';
 import { error } from '../../lib/Logger.js';
 
@@ -22,7 +23,9 @@ export default class extends LocalizedCommand {
 
         if (!member) {
             error(guild.id, `Could not retrieve member ${interaction.user.id}`, this.logFooter);
-            await interactionManager.edit(t('commands:country.error.noMember', { emoji: '❌' }));
+            await interactionManager.edit(Components.error(
+                t('commands:country.error.noMember', { emoji: '❌' })
+            ));
 
             return;
         }
@@ -30,7 +33,9 @@ export default class extends LocalizedCommand {
         const role = guild.roles.cache.get(selectedRoleId);
 
         if (!role) {
-            await interactionManager.edit(t('commands:country.error.noRole', { emoji: '❌' }));
+            await interactionManager.edit(Components.error(
+                t('commands:country.error.noRole', { emoji: '❌' })
+            ));
 
             return;
         }
@@ -46,16 +51,16 @@ export default class extends LocalizedCommand {
                 );
 
                 this.container.logger.error(err);
-                await interactionManager.edit(
+                await interactionManager.edit(Components.error(
                     t('commands:country.error.couldNotRemoveCountryRole', { emoji: '❌' })
-                );
+                ));
 
                 return;
             }
 
-            await interactionManager.edit(
+            await interactionManager.edit(Components.confirm(
                 t('commands:country.confirm.removed', { emoji: Emojis.RainbowSheep, roleName: role.name })
-            );
+            ));
 
             return;
         }
@@ -78,9 +83,9 @@ export default class extends LocalizedCommand {
                 );
 
                 this.container.logger.error(err);
-                await interactionManager.edit(
+                await interactionManager.edit(Components.error(
                     t('commands:country.error.couldNotRemoveOtherCountryRoles', { emoji: '❌' })
-                );
+                ));
 
                 return;
             }
@@ -96,16 +101,16 @@ export default class extends LocalizedCommand {
             );
 
             this.container.logger.error(err);
-            await interactionManager.edit(
+            await interactionManager.edit(Components.error(
                 t('commands:country.error.couldNotAddRole', { emoji: '❌' })
-            );
+            ));
 
             return;
         }
 
-        await interactionManager.edit(
+        await interactionManager.edit(Components.confirm(
             t('commands:country.confirm.newRole', { emoji: Emojis.RainbowSheep, roleName: role.name })
-        );
+        ));
     }
 
     public override async autocompleteRun(interaction: AutocompleteInteraction) {

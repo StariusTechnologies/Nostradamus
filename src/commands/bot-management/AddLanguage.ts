@@ -6,6 +6,7 @@ import { fetchT } from '@sapphire/plugin-i18next';
 import { Emojis } from '../../util/Emojis.js';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
+import { Components } from '../../lib/Components.js';
 import { InteractionContextType } from 'discord-api-types/v10';
 import { error } from '../../lib/Logger.js';
 
@@ -22,16 +23,18 @@ export default class extends LocalizedCommand {
         const existingRole = guild.roles.cache.find(role => role.name.toLowerCase() === frenchName.toLowerCase());
 
         if (existingRole) {
-            await interactionManager.edit(t(
+            await interactionManager.edit(Components.error(t(
                 'commands:addlanguage.error.alreadyExists',
                 { emoji: '❌', role: `<@&${existingRole.id}>` }
-            ));
+            )));
 
             return;
         }
 
         if (guild.roles.cache.size > 249) {
-            await interactionManager.edit(t('commands:addlanguage.error.noSlotLeft', { emoji: '❌' }));
+            await interactionManager.edit(Components.error(
+                t('commands:addlanguage.error.noSlotLeft', { emoji: '❌' })
+            ));
 
             return;
         }
@@ -48,9 +51,9 @@ export default class extends LocalizedCommand {
             );
 
             this.container.logger.error(err);
-            await interactionManager.edit(
+            await interactionManager.edit(Components.error(
                 t('commands:addlanguage.error.couldNotCreateRole', { emoji: '❌' })
-            );
+            ));
 
             return;
         }
@@ -64,11 +67,11 @@ export default class extends LocalizedCommand {
             },
         });
 
-        await interactionManager.edit(t('commands:addlanguage.confirm', {
+        await interactionManager.edit(Components.confirm(t('commands:addlanguage.confirm', {
             emoji: Emojis.RainbowSheep,
             role: `<@&${role.id}>`,
             slotsTaken: guild.roles.cache.size,
-        }));
+        })));
     }
 
     public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

@@ -1,12 +1,16 @@
 import process from 'node:process';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import {
+    type ChatInputCommandInteraction,
+    ContainerBuilder,
+    TextDisplayBuilder
+} from 'discord.js';
 import { MessageFlags } from 'discord-api-types/v10';
 import { ApplicationCommandRegistry, container } from '@sapphire/framework';
 import { fetchT } from '@sapphire/plugin-i18next';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
-import EmbedBuilder from '../../lib/EmbedBuilder.js';
 import { registerCommandDescriptions, registerOptionDescriptions } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
+import { Components } from '../../lib/Components.js';
 
 export default class extends LocalizedCommand {
     public override async chatInputRun(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -15,37 +19,56 @@ export default class extends LocalizedCommand {
         const t = await fetchT(interaction);
 
         if (interaction.user.id !== process.env.OWNER) {
-            await interactionManager.reply({ content: t('commands:eval.forbidden'), flags: MessageFlags.Ephemeral });
+            await interactionManager.reply({
+                ...Components.error(t('commands:eval.forbidden')),
+                flags: MessageFlags.Ephemeral,
+            });
 
             return;
         }
 
-        let output;
-        const embed = new EmbedBuilder()
-            .setTitle(t('commands:eval.embed.title'))
-            .setFields({
-                name: t('commands:eval.embed.codeFieldName'),
-                value: `\`\`\`js\n${interaction.options.getString('code')}\`\`\``,
-            });
+        const code: string = interaction.options.getString('code', true);
+        let output: string;
+        let crashed: boolean = false;
 
         try {
-            output = eval(interaction.options.getString('code', true));
+            const result: unknown = eval(code);
+
+            output = result === undefined || result === null
+                ? '<empty>'
+                : String(result);
         } catch (error) {
             container.logger.debug(error as Error);
             output = (error as Error).message;
-            embed.setTitle(t('commands:eval.embed.resultFieldCrashed'));
+            crashed = true;
         }
 
-        if (!output || output.toString().trim().length < 1) {
+        if (output.trim().length < 1) {
             output = '<empty>';
         }
 
-        embed.addFields([{ name: t('commands:eval.embed.resultFieldName'), value: output.toString() }]);
+        const title: string = crashed
+            ? t('commands:eval.embed.resultFieldCrashed')
+            : t('commands:eval.embed.title');
 
-        await interactionManager.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+        const resultContainer = new ContainerBuilder()
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(`## ${title}`),
+                new TextDisplayBuilder().setContent(
+                    `**${t('commands:eval.embed.codeFieldName')}**\n\`\`\`js\n${code}\n\`\`\``
+                ),
+                new TextDisplayBuilder().setContent(
+                    `**${t('commands:eval.embed.resultFieldName')}**\n\`\`\`\n${output}\n\`\`\``
+                )
+            );
+
+        await interactionManager.reply({
+            components: [resultContainer],
+            flags: MessageFlags.Ephemeral,
+        });
     }
 
-    public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    public override registerApplicationCommands(registry: ApplicationCommandRegistry): void {
         registry.registerChatInputCommand(
             command =>
                 registerCommandDescriptions(command
@@ -58,7 +81,7 @@ export default class extends LocalizedCommand {
                 ),
             {
                 guildIds: [
-                    '428002317833469963', // Starius
+                    '428002317833469963',
                 ],
             }
         );

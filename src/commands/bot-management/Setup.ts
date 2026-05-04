@@ -6,6 +6,7 @@ import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import { registerCommandDescriptions, registerOptionDescriptions } from '../../lib/i18n/LanguageManager.js';
 import { saveSetting, SettingKey } from '../../lib/Settings.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
+import { Components } from '../../lib/Components.js';
 import { Emojis } from '../../util/Emojis.js';
 
 export default class extends LocalizedCommand {
@@ -38,7 +39,9 @@ export default class extends LocalizedCommand {
             return;
         }
 
-        await interactionManager.edit(t('commands:setup.confirm', { emoji: Emojis.RainbowSheep }));
+        await interactionManager.edit(Components.confirm(
+            t('commands:setup.confirm', { emoji: Emojis.RainbowSheep })
+        ));
     }
 
     public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

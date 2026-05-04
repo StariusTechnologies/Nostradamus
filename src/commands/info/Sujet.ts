@@ -1,15 +1,20 @@
-import type { ChatInputCommandInteraction } from 'discord.js';
+import {
+    type ChatInputCommandInteraction,
+    ContainerBuilder,
+    TextDisplayBuilder
+} from 'discord.js';
 import { type ApplicationCommandRegistry } from '@sapphire/framework';
 import { InteractionContextType } from 'discord-api-types/v10';
 import { fetchT } from '@sapphire/plugin-i18next';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import { registerCommandDescriptions } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
-import EmbedBuilder from '../../lib/EmbedBuilder.js';
+import { Components } from '../../lib/Components.js';
 import { Emojis } from '../../util/Emojis.js';
 import type { Topic } from '@prisma/client';
 
 const TOPIC_LOCALE: string = 'fr';
+const ColorInfo: number = 0x43adfc;
 
 type PickedTopic = Pick<Topic, 'id' | 'text'>;
 
@@ -23,16 +28,21 @@ export default class extends LocalizedCommand {
         const topic = await this.pickLeastUsedTopic();
 
         if (!topic) {
-            await interactionManager.edit(t('commands:sujet.noTopics', { emoji: '❌' }));
+            await interactionManager.edit(Components.error(t('commands:sujet.noTopics', { emoji: '❌' })));
 
             return;
         }
 
-        const embed = new EmbedBuilder()
-            .setTitle(t('commands:sujet.title', { emoji: Emojis.RainbowSheep }))
-            .setDescription(topic.text);
+        const container = new ContainerBuilder()
+            .setAccentColor(ColorInfo)
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(
+                    `## ${t('commands:sujet.title', { emoji: Emojis.RainbowSheep })}`
+                ),
+                new TextDisplayBuilder().setContent(topic.text)
+            );
 
-        await interactionManager.edit({ content: null, embeds: [embed] });
+        await interactionManager.edit({ components: [container] });
 
         await this.container.prisma.topic.update({
             where: { id: topic.id },
