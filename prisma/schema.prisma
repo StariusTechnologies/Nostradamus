@@ -13,6 +13,7 @@ model Settings {
     value   String @db.Text
 
     @@id([idGuild, key])
+    @@map("settings")
 }
 
 model UserPreference {
@@ -20,6 +21,7 @@ model UserPreference {
     locale String
 
     @@id(idUser)
+    @@map("user_preference")
 }
 
 model Language {
@@ -37,6 +39,7 @@ model Language {
     @@index(frName)
     @@index(idGuild)
     @@index(idRole)
+    @@map("language")
 }
 
 model LanguageAlias {
@@ -48,6 +51,7 @@ model LanguageAlias {
 
     @@id(id)
     @@index(alias)
+    @@map("language_alias")
 }
 
 model Country {
@@ -65,6 +69,7 @@ model Country {
     @@index(frName)
     @@index(idGuild)
     @@index(idRole)
+    @@map("country")
 }
 
 model CountryAlias {
@@ -76,6 +81,7 @@ model CountryAlias {
 
     @@id(id)
     @@index(alias)
+    @@map("country_alias")
 }
 
 model Topic {
