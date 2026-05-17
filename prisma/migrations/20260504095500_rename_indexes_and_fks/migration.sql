@@ -2,6 +2,12 @@
 -- to the snake_case @@map prefix that Prisma now auto-generates.
 -- Index and constraint names in MySQL are case-preserved on both Windows and Linux,
 -- so plain SQL works without OS-specific tricks.
+--
+-- WARNING: the `ALTER TABLE ... RENAME INDEX` statements below desync MariaDB 10.6's
+-- .frm metadata from InnoDB's SYS_INDEXES on case-preserving Linux, breaking every
+-- read of the affected tables until OPTIMIZE TABLE is run to rebuild them. See the
+-- "Database (Prisma + MySQL)" section of CLAUDE.md. Do NOT follow this pattern in
+-- future migrations — use DROP INDEX + CREATE INDEX instead.
 
 -- country indexes
 ALTER TABLE `country` RENAME INDEX `Country_enName_idx` TO `country_enName_idx`;
