@@ -1,4 +1,8 @@
-import type { SlashCommandBuilder, SlashCommandSubcommandBuilder } from '@discordjs/builders';
+import type {
+    SlashCommandBuilder,
+    SlashCommandSubcommandBuilder,
+    SlashCommandSubcommandGroupBuilder
+} from '@discordjs/builders';
 import { container } from '@sapphire/framework';
 import {
     type SharedNameAndDescription,
@@ -10,6 +14,7 @@ import {
     type SlashCommandOptionsOnlyBuilder,
     type SlashCommandRoleOption,
     type SlashCommandStringOption,
+    type SlashCommandSubcommandsOnlyBuilder,
     type SlashCommandUserOption
 } from 'discord.js';
 import { Locale, type LocalizationMap } from 'discord-api-types/v10';
@@ -57,7 +62,7 @@ const setDescriptions = (interactivePiece: SharedNameAndDescription, key: string
 };
 
 export const registerCommandDescriptions = (
-    command: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder
+    command: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder
 ): typeof command => {
     if (!command.name) {
         throw new Error('You have to name the command before trying to register its descriptions.');
@@ -69,41 +74,113 @@ export const registerCommandDescriptions = (
     ) as typeof command;
 };
 
+export type OptionDescriptionContext = {
+    subcommand?: string;
+    subcommandGroup?: string;
+};
+
 export function registerOptionDescriptions(
     commandName: string,
-    option: SlashCommandAttachmentOption
+    option: SlashCommandAttachmentOption,
+    context?: OptionDescriptionContext
 ): typeof option;
-export function registerOptionDescriptions(commandName: string, option: SlashCommandBooleanOption): typeof option;
-export function registerOptionDescriptions(commandName: string, option: SlashCommandChannelOption): typeof option;
-export function registerOptionDescriptions(commandName: string, option: SlashCommandIntegerOption): typeof option;
 export function registerOptionDescriptions(
     commandName: string,
-    option: SlashCommandMentionableOption
+    option: SlashCommandBooleanOption,
+    context?: OptionDescriptionContext
 ): typeof option;
-export function registerOptionDescriptions(commandName: string, option: SlashCommandRoleOption): typeof option;
-export function registerOptionDescriptions(commandName: string, option: SlashCommandStringOption): typeof option;
-export function registerOptionDescriptions(commandName: string, option: SlashCommandUserOption): typeof option;
-export function registerOptionDescriptions(commandName: string, option: ApplicationCommandOptionBase): typeof option {
+export function registerOptionDescriptions(
+    commandName: string,
+    option: SlashCommandChannelOption,
+    context?: OptionDescriptionContext
+): typeof option;
+export function registerOptionDescriptions(
+    commandName: string,
+    option: SlashCommandIntegerOption,
+    context?: OptionDescriptionContext
+): typeof option;
+export function registerOptionDescriptions(
+    commandName: string,
+    option: SlashCommandMentionableOption,
+    context?: OptionDescriptionContext
+): typeof option;
+export function registerOptionDescriptions(
+    commandName: string,
+    option: SlashCommandRoleOption,
+    context?: OptionDescriptionContext
+): typeof option;
+export function registerOptionDescriptions(
+    commandName: string,
+    option: SlashCommandStringOption,
+    context?: OptionDescriptionContext
+): typeof option;
+export function registerOptionDescriptions(
+    commandName: string,
+    option: SlashCommandUserOption,
+    context?: OptionDescriptionContext
+): typeof option;
+export function registerOptionDescriptions(
+    commandName: string,
+    option: ApplicationCommandOptionBase,
+    context: OptionDescriptionContext = {}
+): typeof option {
     if (!option.name) {
         throw new Error('You have to name the option before trying to register its descriptions.');
     }
 
     return setDescriptions(
         option,
-        `commands:${commandName}.definition.options.${option.name.toLowerCase()}.description`
+        buildOptionKey(commandName, option.name.toLowerCase(), context)
     ) as typeof option;
+}
+
+function buildOptionKey(
+    commandName: string,
+    optionName: string,
+    { subcommand, subcommandGroup }: OptionDescriptionContext
+): string {
+    const base = `commands:${commandName}.definition`;
+
+    if (subcommandGroup && subcommand) {
+        return `${base}.subcommandGroup.${subcommandGroup.toLowerCase()}`
+            + `.subcommand.${subcommand.toLowerCase()}.options.${optionName}.description`;
+    }
+
+    if (subcommand) {
+        return `${base}.subcommand.${subcommand.toLowerCase()}.options.${optionName}.description`;
+    }
+
+    return `${base}.options.${optionName}.description`;
 }
 
 export const registerSubcommandDescriptions = (
     commandName: string,
-    subcommand: SlashCommandSubcommandBuilder
+    subcommand: SlashCommandSubcommandBuilder,
+    subcommandGroup?: string
 ): typeof subcommand => {
     if (!subcommand.name) {
         throw new Error('You have to name the subcommand before trying to register its descriptions.');
     }
 
+    const base = `commands:${commandName}.definition`;
+    const key = subcommandGroup
+        ? `${base}.subcommandGroup.${subcommandGroup.toLowerCase()}`
+            + `.subcommand.${subcommand.name.toLowerCase()}.description`
+        : `${base}.subcommand.${subcommand.name.toLowerCase()}.description`;
+
+    return setDescriptions(subcommand, key) as typeof subcommand;
+};
+
+export const registerSubcommandGroupDescriptions = (
+    commandName: string,
+    group: SlashCommandSubcommandGroupBuilder
+): typeof group => {
+    if (!group.name) {
+        throw new Error('You have to name the subcommand group before trying to register its descriptions.');
+    }
+
     return setDescriptions(
-        subcommand,
-        `commands:${commandName}.definition.subcommand.${subcommand.name.toLowerCase()}.description`
-    ) as typeof subcommand;
+        group,
+        `commands:${commandName}.definition.subcommandGroup.${group.name.toLowerCase()}.description`
+    ) as typeof group;
 };

@@ -94,3 +94,12 @@ model Topic {
     @@index([locale, postCount])
     @@map("topic")
 }
+
+model ListableRole {
+    idGuild String
+    idRole  String
+
+    @@id([idGuild, idRole])
+    @@index(idGuild)
+    @@map("listable_role")
+}

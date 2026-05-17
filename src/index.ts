@@ -1,5 +1,6 @@
 import { ApplicationCommandRegistries, container, RegisterBehavior } from '@sapphire/framework';
 import '@sapphire/plugin-i18next/register';
+import '@sapphire/plugin-subcommands/register';
 import { Bootstrap } from './setup/Bootstrap.js';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);

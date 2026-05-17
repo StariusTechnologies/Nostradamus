@@ -18,6 +18,25 @@
             "removed": "{{emoji}} C'est bon ! Vous n'avez désormais *plus* le rôle **{{roleName}}**."
         }
     },
+    "hasrole": {
+        "definition": {
+            "description": "Lister les membres qui ont un rôle donné",
+            "options": {
+                "role": { "description": "Le rôle dont vous voulez lister les membres" }
+            }
+        },
+        "heading_one": "{{emoji}} {{count}} membre a le rôle {{roleName}}",
+        "heading_other": "{{emoji}} {{count}} membres ont le rôle {{roleName}}",
+        "empty": "{{emoji}} Personne n'a actuellement le rôle {{roleName}}.",
+        "pageInfo": "Page {{current}} / {{total}}",
+        "previous": "← Précédent",
+        "next": "Suivant →",
+        "error": {
+            "notListable": "{{emoji}} Ce rôle n'est pas configuré comme listable. Choisissez-en un dans les suggestions d'auto-complétion.",
+            "noRole": "{{emoji}} Ce rôle n'existe plus sur le serveur.",
+            "fetchFailed": "{{emoji}} Je n'ai pas pu récupérer la liste des membres. Veuillez réessayer plus tard."
+        }
+    },
     "eval": {
         "definition": {
             "description": "Vous permet d'exécuter du code NodeJS et affiche la valeur de retour",
@@ -106,13 +125,58 @@
     "setup": {
         "definition": {
             "description": "Pour changer les paramètres du serveur par-rapport au bot",
-            "options": {
-                "bot-log-channel": { "description": "Le canal dans lequel poster les logs du bot" },
-                "native-language-role": { "description": "Le rôle qui correspond à la langue qui est enseignée sur le serveur" }
+            "subcommand": {
+                "config": {
+                    "description": "Modifier les paramètres généraux du serveur pour le bot",
+                    "options": {
+                        "bot-log-channel": { "description": "Le canal dans lequel poster les logs du bot" },
+                        "native-language-role": { "description": "Le rôle qui correspond à la langue qui est enseignée sur le serveur" }
+                    }
+                }
+            },
+            "subcommandGroup": {
+                "listable-role": {
+                    "description": "Gérer les rôles dont les membres peuvent demander la liste via /hasrole",
+                    "subcommand": {
+                        "add": {
+                            "description": "Rendre un rôle listable via /hasrole",
+                            "options": {
+                                "role": { "description": "Le rôle à rendre listable via /hasrole" }
+                            }
+                        },
+                        "remove": {
+                            "description": "Retirer un rôle de la liste des rôles listables",
+                            "options": {
+                                "role": { "description": "Le rôle à ne plus rendre listable" }
+                            }
+                        },
+                        "list": {
+                            "description": "Lister tous les rôles listables actuellement configurés"
+                        }
+                    }
+                }
             }
         },
-        "nothingChanged": "{{emoji}} Avez-vous oublier d'entrer des paramètres ? Il n'y avait rien à enregistrer.",
-        "confirm": "{{emoji}} Les nouveaux paramètres ont été enregistrés !"
+        "subcommand": {
+            "config": {
+                "nothingChanged": "{{emoji}} Avez-vous oublié d'entrer des paramètres ? Il n'y avait rien à enregistrer.",
+                "confirm": "{{emoji}} Les nouveaux paramètres ont été enregistrés !"
+            },
+            "listableRole": {
+                "add": {
+                    "confirm": "{{emoji}} C'est bon ! **{{roleName}}** peut maintenant être listé via /hasrole.",
+                    "alreadyConfigured": "{{emoji}} **{{roleName}}** est déjà listable."
+                },
+                "remove": {
+                    "notConfigured": "{{emoji}} **{{roleName}}** n'est pas dans la liste des rôles listables, rien à retirer.",
+                    "confirm": "{{emoji}} C'est bon ! **{{roleName}}** n'est plus listable."
+                },
+                "list": {
+                    "heading": "{{emoji}} Rôles listables sur ce serveur",
+                    "empty": "{{emoji}} Aucun rôle listable n'est configuré pour l'instant."
+                }
+            }
+        }
     },
     "sujet": {
         "definition": {

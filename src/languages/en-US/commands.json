@@ -74,6 +74,25 @@
             "removed": "{{emoji}} Done! You now *no longer* have the role **{{roleName}}**."
         }
     },
+    "hasrole": {
+        "definition": {
+            "description": "List the members who have a given role",
+            "options": {
+                "role": { "description": "The role to list members for" }
+            }
+        },
+        "heading_one": "{{emoji}} {{count}} member has the {{roleName}} role",
+        "heading_other": "{{emoji}} {{count}} members have the {{roleName}} role",
+        "empty": "{{emoji}} No one currently has the {{roleName}} role.",
+        "pageInfo": "Page {{current}} / {{total}}",
+        "previous": "← Previous",
+        "next": "Next →",
+        "error": {
+            "notListable": "{{emoji}} This role is not configured as listable. Pick one from the autocomplete suggestions.",
+            "noRole": "{{emoji}} That role no longer exists on the server.",
+            "fetchFailed": "{{emoji}} I could not fetch the member list. Please try again later."
+        }
+    },
 	"eval": {
 		"definition": {
 			"description": "Allows you to execute nodejs code and display the return value",
@@ -162,13 +181,58 @@
     "setup": {
         "definition": {
             "description": "To change the guild settings for the bot",
-            "options": {
-                "bot-log-channel": { "description": "The channel in which to post bot logs" },
-                "native-language-role": { "description": "The role that corresponds to the language that's taught on the server" }
+            "subcommand": {
+                "config": {
+                    "description": "Update the general guild settings for the bot",
+                    "options": {
+                        "bot-log-channel": { "description": "The channel in which to post bot logs" },
+                        "native-language-role": { "description": "The role that corresponds to the language that's taught on the server" }
+                    }
+                }
+            },
+            "subcommandGroup": {
+                "listable-role": {
+                    "description": "Manage which roles users can query a member list for via /hasrole",
+                    "subcommand": {
+                        "add": {
+                            "description": "Make a role queryable via /hasrole",
+                            "options": {
+                                "role": { "description": "The role to make queryable via /hasrole" }
+                            }
+                        },
+                        "remove": {
+                            "description": "Remove a role from the listable list",
+                            "options": {
+                                "role": { "description": "The role to stop making queryable" }
+                            }
+                        },
+                        "list": {
+                            "description": "List all the currently configured listable roles"
+                        }
+                    }
+                }
             }
         },
-        "nothingChanged": "{{emoji}} Did you forget to input a setting? There was nothing to save.",
-        "confirm": "{{emoji}} The new settings have been saved!"
+        "subcommand": {
+            "config": {
+                "nothingChanged": "{{emoji}} Did you forget to input a setting? There was nothing to save.",
+                "confirm": "{{emoji}} The new settings have been saved!"
+            },
+            "listableRole": {
+                "add": {
+                    "confirm": "{{emoji}} Done! **{{roleName}}** can now be queried via /hasrole.",
+                    "alreadyConfigured": "{{emoji}} **{{roleName}}** is already listable."
+                },
+                "remove": {
+                    "notConfigured": "{{emoji}} **{{roleName}}** is not in the listable list, nothing to remove.",
+                    "confirm": "{{emoji}} Done! **{{roleName}}** is no longer listable."
+                },
+                "list": {
+                    "heading": "{{emoji}} Listable roles on this server",
+                    "empty": "{{emoji}} No listable roles are configured yet."
+                }
+            }
+        }
     },
     "sujet": {
         "definition": {
