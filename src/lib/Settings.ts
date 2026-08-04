@@ -4,7 +4,16 @@ import { container } from '@sapphire/framework';
 export enum SettingKey {
     BotLogChannel = 'bot-log-channel',
     NativeLanguageRole = 'native-language-role',
+    AutoCleanupChannel = 'auto-cleanup-channel',
+    WatchlistChannel = 'watchlist-channel',
+    ModerationLogChannel = 'moderation-log-channel',
+    PrimaryLocale = 'primary-locale',
+    AdminRole = 'admin-role',
+    ModeratorRole = 'moderator-role',
+    HelperRole = 'helper-role',
 }
+
+export const DEFAULT_PRIMARY_LOCALE = 'en-US';
 
 const formatters: Partial<Record<SettingKey, (status: string) => string | /*boolean | */null>> = {
     // [SettingKey.BooleanSetting]: v => v.length < 1 ? null : ['true', '1'].includes(v.toLowerCase()),
@@ -47,4 +56,12 @@ export async function saveSetting(
         update: { value: formattedValue },
         where: { idGuild_key: { idGuild: guildId, key: key } },
     });
+}
+
+export async function removeSetting(guildId: Snowflake, key: SettingKey): Promise<boolean> {
+    const result = await container.prisma.settings.deleteMany({
+        where: { idGuild: guildId, key },
+    });
+
+    return result.count > 0;
 }

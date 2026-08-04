@@ -22,6 +22,10 @@ export class Localized extends Precondition {
         return this.checkLocalizationPreference(interaction);
     }
 
+    public override messageRun() {
+        return this.ok();
+    }
+
     private async checkLocalizationPreference(interaction: CommandInteraction) {
         const preference = await this.container.prisma.userPreference.findUnique({
             where: { idUser: interaction.user.id },

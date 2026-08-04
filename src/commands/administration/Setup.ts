@@ -10,7 +10,7 @@ import {
     registerSubcommandDescriptions,
     registerSubcommandGroupDescriptions
 } from '../../lib/i18n/LanguageManager.js';
-import { saveSetting, SettingKey } from '../../lib/Settings.js';
+import { removeSetting, saveSetting, SettingKey } from '../../lib/Settings.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
 import { Emojis } from '../../util/Emojis.js';
@@ -23,6 +23,7 @@ export default class extends LocalizedSubcommand {
             ...options,
             subcommands: [
                 { name: 'config', chatInputRun: 'chatInputConfig' },
+                { name: 'unset', chatInputRun: 'chatInputUnset' },
                 {
                     name: LISTABLE_ROLE_GROUP,
                     type: 'group',
@@ -46,6 +47,13 @@ export default class extends LocalizedSubcommand {
         const settings = [
             SettingKey.BotLogChannel,
             SettingKey.NativeLanguageRole,
+            SettingKey.AutoCleanupChannel,
+            SettingKey.WatchlistChannel,
+            SettingKey.ModerationLogChannel,
+            SettingKey.PrimaryLocale,
+            SettingKey.AdminRole,
+            SettingKey.ModeratorRole,
+            SettingKey.HelperRole,
         ];
 
         for (const setting of settings) {
@@ -67,6 +75,32 @@ export default class extends LocalizedSubcommand {
 
         await interactionManager.edit(Components.confirm(
             t('commands:setup.subcommand.config.confirm', { emoji: Emojis.RainbowSheep })
+        ));
+    }
+
+    public async chatInputUnset(interaction: ChatInputCommandInteraction): Promise<void> {
+        const interactionManager = new InteractionManager(interaction);
+
+        await interactionManager.deferReply({ flags: MessageFlags.Ephemeral });
+
+        const t = await fetchT(interaction);
+        const key = interaction.options.getString('key', true) as SettingKey;
+        const removed = await removeSetting(interaction.guild!.id, key);
+
+        if (!removed) {
+            await interactionManager.edit(t('commands:setup.subcommand.unset.notSet', {
+                emoji: '🤔',
+                key,
+            }));
+
+            return;
+        }
+
+        await interactionManager.edit(Components.confirm(
+            t('commands:setup.subcommand.unset.confirm', {
+                emoji: Emojis.RainbowSheep,
+                key,
+            })
         ));
     }
 
@@ -182,6 +216,51 @@ export default class extends LocalizedSubcommand {
                     .addRoleOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.NativeLanguageRole)
                         .setRequired(false), { subcommand: 'config' }
+                    ))
+                    .addChannelOption(option => registerOptionDescriptions(this.name, option
+                        .setName(SettingKey.AutoCleanupChannel)
+                        .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
+                        .setRequired(false), { subcommand: 'config' }
+                    ))
+                    .addChannelOption(option => registerOptionDescriptions(this.name, option
+                        .setName(SettingKey.WatchlistChannel)
+                        .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
+                        .setRequired(false), { subcommand: 'config' }
+                    ))
+                    .addChannelOption(option => registerOptionDescriptions(this.name, option
+                        .setName(SettingKey.ModerationLogChannel)
+                        .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
+                        .setRequired(false), { subcommand: 'config' }
+                    ))
+                    .addStringOption(option => registerOptionDescriptions(this.name, option
+                        .setName(SettingKey.PrimaryLocale)
+                        .setRequired(false)
+                        .addChoices(
+                            { name: 'English (US)', value: 'en-US' },
+                            { name: 'Français', value: 'fr' }
+                        ), { subcommand: 'config' }
+                    ))
+                    .addRoleOption(option => registerOptionDescriptions(this.name, option
+                        .setName(SettingKey.AdminRole)
+                        .setRequired(false), { subcommand: 'config' }
+                    ))
+                    .addRoleOption(option => registerOptionDescriptions(this.name, option
+                        .setName(SettingKey.ModeratorRole)
+                        .setRequired(false), { subcommand: 'config' }
+                    ))
+                    .addRoleOption(option => registerOptionDescriptions(this.name, option
+                        .setName(SettingKey.HelperRole)
+                        .setRequired(false), { subcommand: 'config' }
+                    ))
+                ))
+                .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
+                    .setName('unset')
+                    .addStringOption(option => registerOptionDescriptions(this.name, option
+                        .setName('key')
+                        .setRequired(true)
+                        .addChoices(
+                            ...Object.values(SettingKey).map(value => ({ name: value, value }))
+                        ), { subcommand: 'unset' }
                     ))
                 ))
                 .addSubcommandGroup(group => registerSubcommandGroupDescriptions(this.name, group

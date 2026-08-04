@@ -2,6 +2,7 @@ import { ContainerBuilder, TextDisplayBuilder, type TextChannel } from 'discord.
 import { MessageFlags } from 'discord-api-types/v10';
 import { container } from '@sapphire/framework';
 import { getSetting, SettingKey } from './Settings.js';
+import { Colors } from '../util/Colors.js';
 
 export async function log(guildId: string, message: string, footer?: string, colour?: number): Promise<void> {
     const logChannelId = await getSetting(guildId, SettingKey.BotLogChannel);
@@ -16,7 +17,7 @@ export async function log(guildId: string, message: string, footer?: string, col
 
     const body: string = footer ? `${message}\n-# —\n-# ${footer}` : message;
     const logContainer = new ContainerBuilder()
-        .setAccentColor(colour ?? 0x0198E9)
+        .setAccentColor(colour ?? Colors.LogDefault)
         .addTextDisplayComponents(
             new TextDisplayBuilder().setContent('## Log'),
             new TextDisplayBuilder().setContent(body)
@@ -29,17 +30,17 @@ export async function log(guildId: string, message: string, footer?: string, col
 }
 
 export function warn(guildId: string, message: string, footer?: string): void {
-    log(guildId, message, footer, 0xFDCD01);
+    log(guildId, message, footer, Colors.LogWarn);
 }
 
 export function error(guildId: string, message: string, footer?: string): void {
-    log(guildId, message, footer, 0xFF2921);
+    log(guildId, message, footer, Colors.Error);
 }
 
 export function success(guildId: string, message: string, footer?: string): void {
-    log(guildId, message, footer, 0x7EB301);
+    log(guildId, message, footer, Colors.Confirm);
 }
 
 export function notice(guildId: string, message: string, footer?: string): void {
-    log(guildId, message, footer, 0x5D0073);
+    log(guildId, message, footer, Colors.LogNotice);
 }

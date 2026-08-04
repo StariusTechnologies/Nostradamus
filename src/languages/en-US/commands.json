@@ -55,6 +55,66 @@
         },
         "confirm": "{{emoji}} Done! The language alias was created for the role {{role}}."
     },
+    "audit": {
+        "definition": {
+            "description": "Audit the server roles against the database",
+            "subcommand": {
+                "run": { "description": "Run the audit and show a hygiene report" }
+            },
+            "subcommandGroup": {
+                "ignored-role": {
+                    "description": "Manage roles the audit should ignore when reporting untracked roles",
+                    "subcommand": {
+                        "add": {
+                            "description": "Add a role to the audit ignore list",
+                            "options": {
+                                "role": { "description": "The role to ignore in audit reports" }
+                            }
+                        },
+                        "remove": {
+                            "description": "Remove a role from the audit ignore list",
+                            "options": {
+                                "role": { "description": "The role to stop ignoring" }
+                            }
+                        },
+                        "list": {
+                            "description": "List all the currently ignored roles"
+                        }
+                    }
+                }
+            }
+        },
+        "subcommand": {
+            "run": {
+                "heading": "{{emoji}} Audit report",
+                "counts": "I've found **{{languages}}** language(s) and **{{countries}}** country(-ies) in the DB, and **{{roles}}** role(s) on the server.",
+                "brokenLanguages_zero": "✅ All language DB entries point at a valid server role.",
+                "brokenLanguages_one": "❗ **{{count}}** language DB entry points at a role that no longer exists on the server:",
+                "brokenLanguages_other": "❗ **{{count}}** language DB entries point at roles that no longer exist on the server:",
+                "brokenCountries_zero": "✅ All country DB entries point at a valid server role.",
+                "brokenCountries_one": "❗ **{{count}}** country DB entry points at a role that no longer exists on the server:",
+                "brokenCountries_other": "❗ **{{count}}** country DB entries point at roles that no longer exist on the server:",
+                "untrackedRoles_zero": "✅ Every server role is tracked in the DB or on the audit ignore list.",
+                "untrackedRoles_one": "❗ **{{count}}** server role is not tracked in the DB and not on the audit ignore list:",
+                "untrackedRoles_other": "❗ **{{count}}** server roles are not tracked in the DB and not on the audit ignore list:",
+                "truncated": "…and {{count}} more"
+            },
+            "ignoredRole": {
+                "add": {
+                    "confirm": "{{emoji}} Done! **{{roleName}}** will now be ignored by the audit.",
+                    "alreadyConfigured": "{{emoji}} **{{roleName}}** is already ignored by the audit."
+                },
+                "remove": {
+                    "confirm": "{{emoji}} Done! **{{roleName}}** is no longer ignored by the audit.",
+                    "notConfigured": "{{emoji}} **{{roleName}}** is not in the audit ignore list, nothing to remove."
+                },
+                "list": {
+                    "heading": "{{emoji}} Roles ignored by the audit",
+                    "empty": "{{emoji}} No roles are currently ignored by the audit."
+                }
+            }
+        }
+    },
     "country": {
         "definition": {
             "description": "To change your country of residence role",
@@ -89,9 +149,158 @@
         "next": "Next →",
         "error": {
             "notListable": "{{emoji}} This role is not configured as listable. Pick one from the autocomplete suggestions.",
-            "noRole": "{{emoji}} That role no longer exists on the server.",
-            "fetchFailed": "{{emoji}} I could not fetch the member list. Please try again later."
+            "noRole": "{{emoji}} That role no longer exists on the server."
         }
+    },
+    "purge-user": {
+        "definition": {
+            "description": "Delete a user's messages across the server (default: last 14 days)",
+            "options": {
+                "user": { "description": "The user whose messages to purge" },
+                "duration": { "description": "How far back to purge (e.g. 30m, 6h, 3d, 1w). Default 14d" }
+            }
+        },
+        "heading": "Purge `{{username}}` ({{userId}})",
+        "deleted_one": "✅ Deleted **{{count}}** message.",
+        "deleted_other": "✅ Deleted **{{count}}** messages.",
+        "noneDeleted": "🤷 No messages to delete for this user.",
+        "invitesHeading_one": "{{count}} invite link created by this user:",
+        "invitesHeading_other": "{{count}} invite links created by this user:",
+        "tooManyInvites": "⚠️ This user created over 60 invite links — too many to list.",
+        "error": {
+            "invalidDuration": "{{emoji}} Invalid duration. Use a value like `30m`, `6h`, `3d`, or `1w`.",
+            "selfPurge": "{{emoji}} You cannot purge your own messages.",
+            "missingTarget": "{{emoji}} Please provide at least one user (ID or mention).",
+            "noValidIds": "{{emoji}} I couldn't parse any user IDs or mentions from your input."
+        }
+    },
+    "prevent-suicide": {
+        "definition": {
+            "description": "DM a member with suicide-prevention resources",
+            "options": {
+                "user": { "description": "The member to send resources to" }
+            }
+        },
+        "dm": "Hello {{user}}, we are contacting you because we noticed one or more references to suicide in your custom status and/or your messages. If you need assistance, we recommend that you get in touch with one of the crisis lines right now, where you will find a sympathetic ear you will be able to talk to.\n\nThe list of suicide crisis lines, by country, is available on this page: <https://suicide.org/international-suicide-hotlines.html>.\n\nThe {{guildName}} moderation team",
+        "confirm": "{{emoji}} Done! The prevention resources have been DM'd to {{user}}.",
+        "error": {
+            "notFound": "{{emoji}} I... Have no idea who that is, sorry.",
+            "dmFailed": "{{emoji}} I couldn't send them a DM. They may have DMs closed or blocked the bot."
+        }
+    },
+    "panic": {
+        "definition": {
+            "description": "Mute the whole server (panic mode). Use '/panic state:off' or '.panic over' to lift it.",
+            "options": {
+                "state": { "description": "Turn panic mode on or off" }
+            }
+        },
+        "confirm": {
+            "enabled": "{{emoji}} Panic mode is now **ON**. The server is muted.",
+            "disabled": "{{emoji}} Panic mode is now **OFF**. The server is back to normal."
+        }
+    },
+    "panic-role": {
+        "definition": {
+            "description": "Manage which roles get muted alongside @everyone when panic mode is enabled",
+            "subcommand": {
+                "add": {
+                    "description": "Add a role to the panic-mute list",
+                    "options": {
+                        "role": { "description": "The role to mute during panic mode" }
+                    }
+                },
+                "remove": {
+                    "description": "Remove a role from the panic-mute list",
+                    "options": {
+                        "role": { "description": "The role to stop muting during panic mode" }
+                    }
+                },
+                "list": {
+                    "description": "List all roles currently muted during panic mode"
+                }
+            }
+        },
+        "subcommand": {
+            "add": {
+                "confirm": "{{emoji}} Done! **{{roleName}}** will now be muted when panic mode is enabled.",
+                "alreadyConfigured": "{{emoji}} **{{roleName}}** is already in the panic-mute list."
+            },
+            "remove": {
+                "confirm": "{{emoji}} Done! **{{roleName}}** will no longer be muted during panic mode.",
+                "notConfigured": "{{emoji}} **{{roleName}}** is not in the panic-mute list, nothing to remove."
+            },
+            "list": {
+                "heading": "{{emoji}} Roles muted during panic mode",
+                "empty": "{{emoji}} No extra roles are configured for panic mode (only @everyone will be muted)."
+            }
+        }
+    },
+    "mod-log": {
+        "definition": {
+            "description": "Post or edit entries in the public moderation log",
+            "subcommand": {
+                "post": {
+                    "description": "Post a new ban / kick / unban entry to the moderation log",
+                    "options": {
+                        "user": { "description": "The user the action applies to" },
+                        "action": { "description": "The moderation action" },
+                        "reason": { "description": "Reason for the action (URLs are censored)" }
+                    }
+                },
+                "edit": {
+                    "description": "Edit the reason on an existing moderation log entry",
+                    "options": {
+                        "message-id": { "description": "ID of the moderation log message to edit" },
+                        "reason": { "description": "The new reason (URLs are censored)" }
+                    }
+                },
+                "remove-avatar": {
+                    "description": "Strip the avatar from a moderation log entry (e.g. if NSFW)",
+                    "options": {
+                        "message-id": { "description": "ID of the moderation log message" }
+                    }
+                }
+            }
+        },
+        "error": {
+            "invalidAction": "{{emoji}} Invalid action. Must be ban, kick, or unban.",
+            "noChannel": "{{emoji}} No moderation log channel is configured. Set one via `/setup config`.",
+            "messageNotFound": "{{emoji}} I couldn't find that message in the moderation log channel.",
+            "notAModLogEntry": "{{emoji}} That message doesn't look like a moderation log entry I can edit.",
+            "unknown": "{{emoji}} Something went wrong. Please try again."
+        },
+        "subcommand": {
+            "post": {
+                "confirm": "{{emoji}} Done! Posted to the moderation log (message ID: `{{messageId}}`)."
+            },
+            "edit": {
+                "confirm": "{{emoji}} Done! Updated moderation log entry `{{messageId}}`."
+            },
+            "remove-avatar": {
+                "confirm": "{{emoji}} Done! Removed the avatar from entry `{{messageId}}`."
+            }
+        },
+        "entry": {
+            "banned": "Member {{mention}} was banned for the following reason: {{reason}}",
+            "kicked": "Member {{mention}} was kicked for the following reason: {{reason}}",
+            "unbanned": "Member {{mention}} was unbanned for the following reason: {{reason}}",
+            "noReason": "(no reason provided)"
+        }
+    },
+    "get-member-id": {
+        "definition": {
+            "description": "Find a member by ID or partial name and get their ID",
+            "options": {
+                "query": { "description": "User ID, username, or nickname (partial match allowed)" }
+            }
+        },
+        "error": {
+            "emptyQuery": "{{emoji}} Please provide an ID, username, or nickname."
+        },
+        "empty": "{{emoji}} I... Have no idea who that could be, sorry.",
+        "heading_one": "{{emoji}} {{count}} match",
+        "heading_other": "{{emoji}} {{count}} matches"
     },
 	"eval": {
 		"definition": {
@@ -135,6 +344,22 @@
             "description": "Tests the latency"
         },
         "response": "Pong! Took me {{latency}}ms."
+    },
+    "pronounce": {
+        "definition": {
+            "description": "Find pronunciation resources for a word in the language taught here",
+            "options": {
+                "word": { "description": "The word or phrase to look up" }
+            }
+        },
+        "heading": "Pronunciation resources for **{{word}}**",
+        "noResult": "No result on this website",
+        "noCheck": "this URL might not work",
+        "disclaimer": "These links redirect you to the corresponding websites and have nothing to do with the server.",
+        "wiktionarySection": "Pronunciation",
+        "error": {
+            "empty": "{{emoji}} Please provide a word to look up."
+        }
     },
     "post": {
         "definition": {
@@ -186,7 +411,20 @@
                     "description": "Update the general guild settings for the bot",
                     "options": {
                         "bot-log-channel": { "description": "The channel in which to post bot logs" },
-                        "native-language-role": { "description": "The role that corresponds to the language that's taught on the server" }
+                        "native-language-role": { "description": "The role that corresponds to the language that's taught on the server" },
+                        "auto-cleanup-channel": { "description": "A channel whose messages are auto-deleted (for slash-command-only channels)" },
+                        "watchlist-channel": { "description": "The channel where watched-member events are logged" },
+                        "moderation-log-channel": { "description": "The public channel where ban/kick/unban entries are posted" },
+                        "primary-locale": { "description": "Default language for public-facing system messages (mod log, sujet, etc.)" },
+                        "admin-role": { "description": "Role for the top mod tier (mod-tier text commands also accept this)" },
+                        "moderator-role": { "description": "Role for the mod tier (helper-tier text commands also accept this)" },
+                        "helper-role": { "description": "Role for the helper tier (the lowest staff tier for text commands)" }
+                    }
+                },
+                "unset": {
+                    "description": "Clear a single setting (revert to default/unset)",
+                    "options": {
+                        "key": { "description": "Which setting to clear" }
                     }
                 }
             },
@@ -218,6 +456,10 @@
                 "nothingChanged": "{{emoji}} Did you forget to input a setting? There was nothing to save.",
                 "confirm": "{{emoji}} The new settings have been saved!"
             },
+            "unset": {
+                "confirm": "{{emoji}} Done! Setting `{{key}}` has been cleared.",
+                "notSet": "{{emoji}} `{{key}}` was not set, nothing to clear."
+            },
             "listableRole": {
                 "add": {
                     "confirm": "{{emoji}} Done! **{{roleName}}** can now be queried via /hasrole.",
@@ -240,5 +482,80 @@
         },
         "title": "{{emoji}} Here's a topic to discuss",
         "noTopics": "{{emoji}} There are no topics available at the moment."
+    },
+    "watch": {
+        "definition": {
+            "description": "Manage the watchlist of members under moderator surveillance",
+            "subcommand": {
+                "add": {
+                    "description": "Add a member to the watchlist",
+                    "options": {
+                        "user": { "description": "The member to watch" },
+                        "reason": { "description": "Why this member is being watched" },
+                        "duration": { "description": "Duration (e.g. 3h, 2d, 1w). Default 1w. Use 'infinite' for no expiry" }
+                    }
+                },
+                "remove": {
+                    "description": "Remove a member from the watchlist",
+                    "options": {
+                        "user": { "description": "The member to unwatch" }
+                    }
+                },
+                "edit": {
+                    "description": "Update the reason or duration of an existing watch",
+                    "options": {
+                        "user": { "description": "The watched member to update" },
+                        "reason": { "description": "The new watch reason" },
+                        "duration": { "description": "Duration (e.g. 3h, 2d, 1w). Default 1w. Use 'infinite' for no expiry" }
+                    }
+                },
+                "info": {
+                    "description": "Show full info about a watched member",
+                    "options": {
+                        "user": { "description": "The watched member" }
+                    }
+                },
+                "list": {
+                    "description": "List every member currently on the watchlist"
+                }
+            }
+        },
+        "error": {
+            "invalidDuration": "{{emoji}} Invalid duration. Use a value like `3h`, `2d`, or `1w`."
+        },
+        "field": {
+            "reason": "Reason:",
+            "startedAt": "Watched since:",
+            "expiresAt": "Expires:",
+            "never": "never"
+        },
+        "subcommand": {
+            "add": {
+                "confirmTemp": "{{emoji}} Done! {{user}} is now on the watchlist (expires {{expires}}).",
+                "confirmPermanent": "{{emoji}} Done! {{user}} is now on the watchlist **permanently**.",
+                "alreadyWatched": "{{emoji}} {{user}} is already on the watchlist. Current reason:\n>>> {{reason}}\n\nUse `/watch edit` to update it."
+            },
+            "remove": {
+                "confirm": "{{emoji}} Done! {{user}} is no longer on the watchlist.",
+                "notWatched": "{{emoji}} {{user}} is not on the watchlist."
+            },
+            "edit": {
+                "confirmTemp": "{{emoji}} Done! The watch entry for {{user}} has been updated (now expires {{expires}}).",
+                "confirmPermanent": "{{emoji}} Done! The watch entry for {{user}} is now **permanent**.",
+                "notWatched": "{{emoji}} {{user}} is not on the watchlist. Use `/watch add` instead."
+            },
+            "info": {
+                "heading": "{{emoji}} Watch info",
+                "notWatched": "{{emoji}} {{user}} is not on the watchlist."
+            },
+            "list": {
+                "heading_one": "{{emoji}} {{count}} member is on the watchlist",
+                "heading_other": "{{emoji}} {{count}} members are on the watchlist",
+                "empty": "{{emoji}} The watchlist is empty.",
+                "pageInfo": "Page {{current}} / {{total}}",
+                "previous": "← Previous",
+                "next": "Next →"
+            }
+        }
     }
 }

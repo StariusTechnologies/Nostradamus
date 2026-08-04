@@ -5,8 +5,8 @@ export class LocalizedCommand extends Command
 {
     public constructor(context: SapphireCommand.LoaderContext, options?: SapphireCommand.Options) {
         super(context, {
-            preconditions: ['Localized', ...options?.preconditions ?? []],
             ...options,
+            preconditions: ['Localized', ...options?.preconditions ?? []],
         });
     }
 }

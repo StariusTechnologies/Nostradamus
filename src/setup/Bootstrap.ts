@@ -58,6 +58,8 @@ export class Bootstrap {
                 level: LogLevel.Debug,
             },
             shards: 'auto',
+            defaultPrefix: '.',
+            loadMessageCommandListeners: true,
             intents: this.intents,
             partials: [
                 Partials.User,

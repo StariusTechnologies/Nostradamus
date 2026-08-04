@@ -103,3 +103,46 @@ model ListableRole {
     @@index(idGuild)
     @@map("listable_role")
 }
+
+model AuditIgnoredRole {
+    idGuild String
+    idRole  String
+
+    @@id([idGuild, idRole])
+    @@index(idGuild)
+    @@map("audit_ignored_role")
+}
+
+model WatchedMember {
+    idGuild   String
+    idUser    String
+    reason    String    @db.Text
+    startedAt DateTime  @default(now())
+    expiresAt DateTime?
+
+    @@id([idGuild, idUser])
+    @@index(idGuild)
+    @@map("watched_member")
+}
+
+model PanicRole {
+    idGuild String
+    idRole  String
+
+    @@id([idGuild, idRole])
+    @@index(idGuild)
+    @@map("panic_role")
+}
+
+model TrackedMessage {
+    idGuild   String
+    idUser    String
+    idChannel String
+    idMessage String
+    createdAt DateTime
+
+    @@id([idGuild, idMessage])
+    @@index([idGuild, idUser, createdAt])
+    @@index([idGuild, createdAt])
+    @@map("tracked_message")
+}

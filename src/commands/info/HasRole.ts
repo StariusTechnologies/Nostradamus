@@ -23,7 +23,6 @@ import { registerCommandDescriptions, registerOptionDescriptions } from '../../l
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
 import { Emojis } from '../../util/Emojis.js';
-import { error } from '../../lib/Logger.js';
 import { MINUTE } from '../../util/DateTime.js';
 
 const PAGE_SIZE = 25;
@@ -57,18 +56,6 @@ export default class extends LocalizedCommand {
         if (!role) {
             await interactionManager.edit(Components.error(
                 t('commands:hasrole.error.noRole', { emoji: '❌' })
-            ));
-
-            return;
-        }
-
-        try {
-            await guild.members.fetch();
-        } catch (err) {
-            error(guild.id, `Could not fetch members for /hasrole: ${err}`, this.logFooter);
-            this.container.logger.error(err);
-            await interactionManager.edit(Components.error(
-                t('commands:hasrole.error.fetchFailed', { emoji: '❌' })
             ));
 
             return;

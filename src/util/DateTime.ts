@@ -37,3 +37,26 @@ export const HOUR = 60 * MINUTE;
 export const DAY = 24 * HOUR;
 export const WEEK = 7 * DAY;
 export const YEAR = 365 * DAY;
+
+const DURATION_UNITS: Record<string, number> = {
+    h: HOUR,
+    d: DAY,
+    w: WEEK,
+};
+
+export function parseDuration(input: string): number | null {
+    const match = input.trim().match(/^(\d+)([hdw])$/iu);
+
+    if (!match) {
+        return null;
+    }
+
+    const value = parseInt(match[1], 10);
+    const unit = match[2].toLowerCase();
+
+    if (!Number.isFinite(value) || value <= 0) {
+        return null;
+    }
+
+    return value * DURATION_UNITS[unit];
+}

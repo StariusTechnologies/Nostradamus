@@ -20,7 +20,7 @@
     "author": "Lily Bergonzat <lilybergonzat@gmail.com>",
     "contributors": [],
     "scripts": {
-        "start": "npm run compile && npm run quickstart",
+        "start": "npm run clean-compile && npm run quickstart",
         "quickstart": "node .",
         "compile": "tsc && npm run copy-static-files",
         "clean-compile": "rm -rf dist && tsc --build --clean && npm run compile",

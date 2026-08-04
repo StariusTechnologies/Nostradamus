@@ -1,4 +1,64 @@
 {
+    "audit": {
+        "definition": {
+            "description": "Vérifier les rôles du serveur par rapport à la base de données",
+            "subcommand": {
+                "run": { "description": "Lancer l'audit et afficher un rapport d'hygiène" }
+            },
+            "subcommandGroup": {
+                "ignored-role": {
+                    "description": "Gérer les rôles que l'audit doit ignorer en signalant les rôles non répertoriés",
+                    "subcommand": {
+                        "add": {
+                            "description": "Ajouter un rôle à la liste des rôles ignorés par l'audit",
+                            "options": {
+                                "role": { "description": "Le rôle à ignorer dans les rapports d'audit" }
+                            }
+                        },
+                        "remove": {
+                            "description": "Retirer un rôle de la liste des rôles ignorés par l'audit",
+                            "options": {
+                                "role": { "description": "Le rôle à ne plus ignorer" }
+                            }
+                        },
+                        "list": {
+                            "description": "Lister tous les rôles actuellement ignorés par l'audit"
+                        }
+                    }
+                }
+            }
+        },
+        "subcommand": {
+            "run": {
+                "heading": "{{emoji}} Rapport d'audit",
+                "counts": "J'ai trouvé **{{languages}}** langue(s) et **{{countries}}** pays dans la BDD, et **{{roles}}** rôle(s) sur le serveur.",
+                "brokenLanguages_zero": "✅ Toutes les entrées de langue de la BDD pointent vers un rôle valide du serveur.",
+                "brokenLanguages_one": "❗ **{{count}}** entrée de langue dans la BDD pointe vers un rôle qui n'existe plus sur le serveur :",
+                "brokenLanguages_other": "❗ **{{count}}** entrées de langue dans la BDD pointent vers des rôles qui n'existent plus sur le serveur :",
+                "brokenCountries_zero": "✅ Toutes les entrées de pays de la BDD pointent vers un rôle valide du serveur.",
+                "brokenCountries_one": "❗ **{{count}}** entrée de pays dans la BDD pointe vers un rôle qui n'existe plus sur le serveur :",
+                "brokenCountries_other": "❗ **{{count}}** entrées de pays dans la BDD pointent vers des rôles qui n'existent plus sur le serveur :",
+                "untrackedRoles_zero": "✅ Tous les rôles du serveur sont suivis dans la BDD ou présents dans la liste d'ignorés par l'audit.",
+                "untrackedRoles_one": "❗ **{{count}}** rôle du serveur n'est pas suivi dans la BDD ni présent dans la liste d'ignorés par l'audit :",
+                "untrackedRoles_other": "❗ **{{count}}** rôles du serveur ne sont pas suivis dans la BDD ni présents dans la liste d'ignorés par l'audit :",
+                "truncated": "… et {{count}} de plus"
+            },
+            "ignoredRole": {
+                "add": {
+                    "confirm": "{{emoji}} C'est bon ! **{{roleName}}** sera désormais ignoré par l'audit.",
+                    "alreadyConfigured": "{{emoji}} **{{roleName}}** est déjà ignoré par l'audit."
+                },
+                "remove": {
+                    "confirm": "{{emoji}} C'est bon ! **{{roleName}}** n'est plus ignoré par l'audit.",
+                    "notConfigured": "{{emoji}} **{{roleName}}** n'est pas dans la liste des rôles ignorés par l'audit, rien à retirer."
+                },
+                "list": {
+                    "heading": "{{emoji}} Rôles ignorés par l'audit",
+                    "empty": "{{emoji}} Aucun rôle n'est actuellement ignoré par l'audit."
+                }
+            }
+        }
+    },
     "country": {
         "definition": {
             "description": "Pour changer votre rôle de pays de résidence",
@@ -33,9 +93,158 @@
         "next": "Suivant →",
         "error": {
             "notListable": "{{emoji}} Ce rôle n'est pas configuré comme listable. Choisissez-en un dans les suggestions d'auto-complétion.",
-            "noRole": "{{emoji}} Ce rôle n'existe plus sur le serveur.",
-            "fetchFailed": "{{emoji}} Je n'ai pas pu récupérer la liste des membres. Veuillez réessayer plus tard."
+            "noRole": "{{emoji}} Ce rôle n'existe plus sur le serveur."
         }
+    },
+    "purge-user": {
+        "definition": {
+            "description": "Supprimer les messages d'un utilisateur sur tout le serveur (défaut : 14 derniers jours)",
+            "options": {
+                "user": { "description": "L'utilisateur dont les messages doivent être supprimés" },
+                "duration": { "description": "Période à purger (ex. 30m, 6h, 3d, 1w). Défaut 14d" }
+            }
+        },
+        "heading": "Purge de `{{username}}` ({{userId}})",
+        "deleted_one": "✅ **{{count}}** message supprimé.",
+        "deleted_other": "✅ **{{count}}** messages supprimés.",
+        "noneDeleted": "🤷 Aucun message à supprimer pour cet utilisateur.",
+        "invitesHeading_one": "{{count}} lien d'invitation créé par cet utilisateur :",
+        "invitesHeading_other": "{{count}} liens d'invitation créés par cet utilisateur :",
+        "tooManyInvites": "⚠️ Cet utilisateur a créé plus de 60 liens d'invitation — trop pour les lister.",
+        "error": {
+            "invalidDuration": "{{emoji}} Durée invalide. Utilisez une valeur comme `30m`, `6h`, `3d` ou `1w`.",
+            "selfPurge": "{{emoji}} Vous ne pouvez pas purger vos propres messages.",
+            "missingTarget": "{{emoji}} Veuillez fournir au moins un utilisateur (ID ou mention).",
+            "noValidIds": "{{emoji}} Je n'ai pas pu extraire d'ID ou de mention dans votre saisie."
+        }
+    },
+    "prevent-suicide": {
+        "definition": {
+            "description": "MP à un membre avec des ressources de prévention du suicide",
+            "options": {
+                "user": { "description": "Le membre à qui envoyer les ressources" }
+            }
+        },
+        "dm": "Bonjour {{user}}, nous te contactons car nous avons observé une ou plusieurs références au suicide dans ton statut et/ou dans tes messages. Si tu as besoin d'assistance, nous t'invitons à prendre contact dès maintenant avec un des services d'aide téléphonique, où tu trouveras une oreille attentive à ta situation et à qui tu pourras te confier.\n\nLes numéros de ces services, par pays, sont disponibles sur cette page : <https://fr.wikipedia.org/wiki/Prévention_du_suicide#Écoute_en_ligne_et_aide_directe>.\n\nL'équipe de modération de {{guildName}}",
+        "confirm": "{{emoji}} C'est bon ! Les ressources de prévention ont été envoyées en MP à {{user}}.",
+        "error": {
+            "notFound": "{{emoji}} J'ai... aucune idée de qui c'est, désolé.",
+            "dmFailed": "{{emoji}} Je n'ai pas pu lui envoyer de MP. Ses MPs sont peut-être fermés ou le bot est bloqué."
+        }
+    },
+    "panic": {
+        "definition": {
+            "description": "Mute tout le serveur (mode panique). '/panic state:off' ou '.panic over' pour annuler.",
+            "options": {
+                "state": { "description": "Activer ou désactiver le mode panique" }
+            }
+        },
+        "confirm": {
+            "enabled": "{{emoji}} Mode panique **ACTIVÉ**. Le serveur est muet.",
+            "disabled": "{{emoji}} Mode panique **DÉSACTIVÉ**. Le serveur est revenu à la normale."
+        }
+    },
+    "panic-role": {
+        "definition": {
+            "description": "Gérer les rôles à mute en plus de @everyone quand le mode panique est activé",
+            "subcommand": {
+                "add": {
+                    "description": "Ajouter un rôle à la liste de mute du mode panique",
+                    "options": {
+                        "role": { "description": "Le rôle à mute pendant le mode panique" }
+                    }
+                },
+                "remove": {
+                    "description": "Retirer un rôle de la liste de mute du mode panique",
+                    "options": {
+                        "role": { "description": "Le rôle à ne plus mute pendant le mode panique" }
+                    }
+                },
+                "list": {
+                    "description": "Lister tous les rôles actuellement mute pendant le mode panique"
+                }
+            }
+        },
+        "subcommand": {
+            "add": {
+                "confirm": "{{emoji}} C'est bon ! **{{roleName}}** sera mute pendant le mode panique.",
+                "alreadyConfigured": "{{emoji}} **{{roleName}}** est déjà dans la liste de mute du mode panique."
+            },
+            "remove": {
+                "confirm": "{{emoji}} C'est bon ! **{{roleName}}** ne sera plus mute pendant le mode panique.",
+                "notConfigured": "{{emoji}} **{{roleName}}** n'est pas dans la liste de mute du mode panique, rien à retirer."
+            },
+            "list": {
+                "heading": "{{emoji}} Rôles mute pendant le mode panique",
+                "empty": "{{emoji}} Aucun rôle supplémentaire configuré pour le mode panique (seul @everyone sera mute)."
+            }
+        }
+    },
+    "mod-log": {
+        "definition": {
+            "description": "Publier ou modifier des entrées dans le journal public de modération",
+            "subcommand": {
+                "post": {
+                    "description": "Publier une nouvelle entrée ban / kick / unban dans le journal de modération",
+                    "options": {
+                        "user": { "description": "L'utilisateur concerné par l'action" },
+                        "action": { "description": "L'action de modération" },
+                        "reason": { "description": "Raison de l'action (les URLs sont censurées)" }
+                    }
+                },
+                "edit": {
+                    "description": "Modifier la raison d'une entrée existante du journal de modération",
+                    "options": {
+                        "message-id": { "description": "ID du message du journal de modération à modifier" },
+                        "reason": { "description": "La nouvelle raison (les URLs sont censurées)" }
+                    }
+                },
+                "remove-avatar": {
+                    "description": "Retirer l'avatar d'une entrée du journal de modération (si NSFW par ex.)",
+                    "options": {
+                        "message-id": { "description": "ID du message du journal de modération" }
+                    }
+                }
+            }
+        },
+        "error": {
+            "invalidAction": "{{emoji}} Action invalide. Doit être ban, kick ou unban.",
+            "noChannel": "{{emoji}} Aucun canal de journal de modération configuré. Configurez-en un via `/setup config`.",
+            "messageNotFound": "{{emoji}} Je n'ai pas trouvé ce message dans le canal du journal de modération.",
+            "notAModLogEntry": "{{emoji}} Ce message ne ressemble pas à une entrée du journal de modération que je peux modifier.",
+            "unknown": "{{emoji}} Quelque chose a mal tourné. Veuillez réessayer."
+        },
+        "subcommand": {
+            "post": {
+                "confirm": "{{emoji}} C'est bon ! Publié dans le journal de modération (ID du message : `{{messageId}}`)."
+            },
+            "edit": {
+                "confirm": "{{emoji}} C'est bon ! Entrée `{{messageId}}` du journal de modération mise à jour."
+            },
+            "remove-avatar": {
+                "confirm": "{{emoji}} C'est bon ! Avatar retiré de l'entrée `{{messageId}}`."
+            }
+        },
+        "entry": {
+            "banned": "Membre {{mention}} banni pour la raison suivante : {{reason}}",
+            "kicked": "Membre {{mention}} expulsé pour la raison suivante : {{reason}}",
+            "unbanned": "Membre {{mention}} débanni pour la raison suivante : {{reason}}",
+            "noReason": "(aucune raison fournie)"
+        }
+    },
+    "get-member-id": {
+        "definition": {
+            "description": "Trouver un membre par ID ou nom partiel et obtenir son ID",
+            "options": {
+                "query": { "description": "ID, nom d'utilisateur ou pseudo (correspondance partielle)" }
+            }
+        },
+        "error": {
+            "emptyQuery": "{{emoji}} Veuillez fournir un ID, un nom d'utilisateur ou un pseudo."
+        },
+        "empty": "{{emoji}} J'ai... aucune idée de qui ça pourrait être, désolé.",
+        "heading_one": "{{emoji}} {{count}} correspondance",
+        "heading_other": "{{emoji}} {{count}} correspondances"
     },
     "eval": {
         "definition": {
@@ -79,6 +288,22 @@
             "description": "Teste la latence"
         },
         "response": "Pong! Ça m'a pris {{latency}}ms."
+    },
+    "pronounce": {
+        "definition": {
+            "description": "Trouver des ressources de prononciation pour un mot dans la langue enseignée ici",
+            "options": {
+                "word": { "description": "Le mot ou la phrase à chercher" }
+            }
+        },
+        "heading": "Ressources de prononciation pour **{{word}}**",
+        "noResult": "Pas de résultat sur ce site",
+        "noCheck": "cette URL pourrait ne pas fonctionner",
+        "disclaimer": "Ces liens redirigent vers les sites correspondants et n'ont rien à voir avec le serveur.",
+        "wiktionarySection": "Prononciation",
+        "error": {
+            "empty": "{{emoji}} Veuillez fournir un mot à chercher."
+        }
     },
     "post": {
         "definition": {
@@ -130,7 +355,20 @@
                     "description": "Modifier les paramètres généraux du serveur pour le bot",
                     "options": {
                         "bot-log-channel": { "description": "Le canal dans lequel poster les logs du bot" },
-                        "native-language-role": { "description": "Le rôle qui correspond à la langue qui est enseignée sur le serveur" }
+                        "native-language-role": { "description": "Le rôle qui correspond à la langue qui est enseignée sur le serveur" },
+                        "auto-cleanup-channel": { "description": "Un canal dont les messages sont auto-supprimés (canaux dédiés aux slash commands)" },
+                        "watchlist-channel": { "description": "Le canal où sont journalisés les évènements des membres surveillés" },
+                        "moderation-log-channel": { "description": "Le canal public où les entrées de ban/kick/unban sont publiées" },
+                        "primary-locale": { "description": "Langue par défaut pour les messages système publics (mod log, sujet, etc.)" },
+                        "admin-role": { "description": "Rôle du palier le plus élevé (les commandes texte de palier mod l'acceptent aussi)" },
+                        "moderator-role": { "description": "Rôle du palier mod (les commandes texte de palier helper l'acceptent aussi)" },
+                        "helper-role": { "description": "Rôle du palier helper (le palier le plus bas pour les commandes texte)" }
+                    }
+                },
+                "unset": {
+                    "description": "Effacer un paramètre (revenir à la valeur par défaut/non défini)",
+                    "options": {
+                        "key": { "description": "Le paramètre à effacer" }
                     }
                 }
             },
@@ -162,6 +400,10 @@
                 "nothingChanged": "{{emoji}} Avez-vous oublié d'entrer des paramètres ? Il n'y avait rien à enregistrer.",
                 "confirm": "{{emoji}} Les nouveaux paramètres ont été enregistrés !"
             },
+            "unset": {
+                "confirm": "{{emoji}} C'est bon ! Le paramètre `{{key}}` a été effacé.",
+                "notSet": "{{emoji}} `{{key}}` n'était pas défini, rien à effacer."
+            },
             "listableRole": {
                 "add": {
                     "confirm": "{{emoji}} C'est bon ! **{{roleName}}** peut maintenant être listé via /hasrole.",
@@ -184,5 +426,80 @@
         },
         "title": "{{emoji}} Voici un sujet de discussion",
         "noTopics": "{{emoji}} Aucun sujet n'est disponible pour le moment."
+    },
+    "watch": {
+        "definition": {
+            "description": "Gérer la liste des membres sous surveillance des modérateurs",
+            "subcommand": {
+                "add": {
+                    "description": "Ajouter un membre à la liste de surveillance",
+                    "options": {
+                        "user": { "description": "Le membre à surveiller" },
+                        "reason": { "description": "Raison de la mise sous surveillance" },
+                        "duration": { "description": "Durée (ex. 3h, 2d, 1w). Défaut 1w. Utilisez 'infini' pour aucune expiration" }
+                    }
+                },
+                "remove": {
+                    "description": "Retirer un membre de la liste de surveillance",
+                    "options": {
+                        "user": { "description": "Le membre à retirer de la surveillance" }
+                    }
+                },
+                "edit": {
+                    "description": "Modifier la raison ou la durée d'une surveillance existante",
+                    "options": {
+                        "user": { "description": "Le membre surveillé à modifier" },
+                        "reason": { "description": "La nouvelle raison de la surveillance" },
+                        "duration": { "description": "Durée (ex. 3h, 2d, 1w). Défaut 1w. Utilisez 'infini' pour aucune expiration" }
+                    }
+                },
+                "info": {
+                    "description": "Afficher les détails d'un membre surveillé",
+                    "options": {
+                        "user": { "description": "Le membre surveillé" }
+                    }
+                },
+                "list": {
+                    "description": "Lister tous les membres actuellement sous surveillance"
+                }
+            }
+        },
+        "error": {
+            "invalidDuration": "{{emoji}} Durée invalide. Utilisez une valeur comme `3h`, `2d` ou `1w`."
+        },
+        "field": {
+            "reason": "Raison :",
+            "startedAt": "Surveillé depuis :",
+            "expiresAt": "Expire :",
+            "never": "jamais"
+        },
+        "subcommand": {
+            "add": {
+                "confirmTemp": "{{emoji}} C'est bon ! {{user}} est désormais sous surveillance (expire {{expires}}).",
+                "confirmPermanent": "{{emoji}} C'est bon ! {{user}} est désormais sous surveillance **permanente**.",
+                "alreadyWatched": "{{emoji}} {{user}} est déjà sous surveillance. Raison actuelle :\n>>> {{reason}}\n\nUtilisez `/watch edit` pour la modifier."
+            },
+            "remove": {
+                "confirm": "{{emoji}} C'est bon ! {{user}} n'est plus sous surveillance.",
+                "notWatched": "{{emoji}} {{user}} n'est pas sous surveillance."
+            },
+            "edit": {
+                "confirmTemp": "{{emoji}} C'est bon ! La surveillance de {{user}} a été mise à jour (expire maintenant {{expires}}).",
+                "confirmPermanent": "{{emoji}} C'est bon ! La surveillance de {{user}} est désormais **permanente**.",
+                "notWatched": "{{emoji}} {{user}} n'est pas sous surveillance. Utilisez plutôt `/watch add`."
+            },
+            "info": {
+                "heading": "{{emoji}} Détails de surveillance",
+                "notWatched": "{{emoji}} {{user}} n'est pas sous surveillance."
+            },
+            "list": {
+                "heading_one": "{{emoji}} {{count}} membre est sous surveillance",
+                "heading_other": "{{emoji}} {{count}} membres sont sous surveillance",
+                "empty": "{{emoji}} La liste de surveillance est vide.",
+                "pageInfo": "Page {{current}} / {{total}}",
+                "previous": "← Précédent",
+                "next": "Suivant →"
+            }
+        }
     }
 }

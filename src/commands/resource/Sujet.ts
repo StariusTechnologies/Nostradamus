@@ -11,10 +11,10 @@ import { registerCommandDescriptions } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
 import { Emojis } from '../../util/Emojis.js';
+import { Colors } from '../../util/Colors.js';
 import type { Topic } from '@prisma/client';
 
 const TOPIC_LOCALE: string = 'fr';
-const ColorInfo: number = 0x43adfc;
 
 type PickedTopic = Pick<Topic, 'id' | 'text'>;
 
@@ -34,7 +34,7 @@ export default class extends LocalizedCommand {
         }
 
         const container = new ContainerBuilder()
-            .setAccentColor(ColorInfo)
+            .setAccentColor(Colors.Info)
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(
                     `## ${t('commands:sujet.title', { emoji: Emojis.RainbowSheep })}`

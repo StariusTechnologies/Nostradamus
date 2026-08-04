@@ -78,6 +78,8 @@ Helpers in `src/lib/i18n/LanguageManager.ts`:
 
 Always wrap the slash-command builder in these helpers — do not call `setDescription` manually unless there is a specific reason.
 
+**Discord caps every description at 100 characters** — command, subcommand, subcommand group, *and* option descriptions, in every locale individually. The cap is enforced by `@sapphire/shapeshift` when discord.js's builders validate the description (via `setDescription` / `setDescriptionLocalization`), so an over-cap French translation throws `ExpectedConstraintError > s.string().lengthLessThanOrEqual()` at command-registration time. Sapphire surfaces this as `Encountered error while handling the command application command registry for command "<name>"` and then **aborts registration for the entire command** — meaning the new option you were adding *plus* any other recent changes to that command silently fail to push to Discord, and the slash command in the UI keeps showing the previous definition. Keep every description ≤ 100 chars; when porting French text, watch for parenthetical clarifications that bloat the count.
+
 ### Localized command pattern
 
 Two base classes in `src/lib/`:
@@ -118,6 +120,30 @@ What InteractionManager does for you:
 - An options object passed in is shallow-cloned, the V2 flag merged into its `flags`, and forwarded to discord.js. Don't pass `content` or `embeds` — both are forbidden by the V2 flag and Discord will reject the request.
 - `deferReply` is idempotent — if the interaction is already deferred or replied, it short-circuits.
 - After an initial reply, subsequent `reply` calls automatically become `followUp`s and `edit` targets the follow-up message.
+
+### Accent colors (`src/util/Colors.ts`)
+
+`Colors` is the single source of truth for every accent color in the bot. **Never inline hex values** in `setAccentColor(...)` calls or duplicate the constants locally — import from `../util/Colors.js` and reuse `Colors.Error`, `Colors.Confirm`, `Colors.Info`, `Colors.LogDefault`, `Colors.LogWarn`, `Colors.LogNotice`. `Components.error/confirm/info` and `Logger.error/warn/success/notice` already pull from here; new commands should too. If a new semantic color is needed, add it to `Colors.ts` first.
+
+### WatchService (`src/lib/WatchService.ts`)
+
+In-memory mod watchlist, backed by the `WatchedMember` table. **Always read through `WatchService.isWatched/get/getByGuild`, never query `prisma.watchedMember` directly from listeners** — the service maintains a cache keyed by `${guildId}:${userId}` so the hot path (every `messageCreate`, every `voiceStateUpdate`) is O(1) instead of round-tripping to MySQL on every guild message. The cache is loaded once in `Ready.ts` via `WatchService.init()`; CRUD methods (`add`, `edit`, `remove`) update DB and cache atomically.
+
+Two pieces of state are deliberately not persisted: the per-user activity-throttle timestamp (`shouldLogActivity`, 1-hour rate limit on the "active" event) and the lazy-expiry check (`checkAndExpire`). The throttle resets on every bot restart — that's fine; over-logging right after a deploy is harmless. Temp-watch expiry happens **lazily**: a watched member's row only gets evaluated for expiration when they next send a message or change voice state. There's no scheduled job sweeping for expired watches, by design (V3 parity, keeps the bot stateless w.r.t. timers).
+
+Watchlist events go to `SettingKey.WatchlistChannel` (separate from `BotLogChannel`) via `WatchService.logEvent(member, payload, watchRow?)`. The optional `watchRow` parameter is for the expiry case where the row has already been removed from cache before logging — pass the row returned by `checkAndExpire` so the event renders with the original reason/timestamps. Tone is `'active'` (green) or `'ending'` (red), mapping to `Colors.Confirm` / `Colors.Error`.
+
+### InviteCache (`src/lib/InviteCache.ts`)
+
+Companion to `WatchService` for the watched-invite feature. Maintains an in-memory per-guild `Map<inviteCode, uses>` so we can detect *which* invite was used by a new joiner — Discord's `GuildMemberAdd` event doesn't tell you that directly; you have to diff invite uses before and after the join. `InviteCache.detectUsedInvite(guildId)` is the workhorse: it compares cached uses against the current `guild.invites.fetch()`, returns the matching `{ code, inviterId }` (or `null` if no diff, vanity URL, or fetch failed), and refreshes the cache atomically before returning. Always call `detectUsedInvite` (not `refresh` + manual diff) so the cache stays in sync.
+
+Cache lifecycle:
+
+- `Ready.ts` calls `InviteCache.init()` after `WatchService.init()` — both must finish before the bot starts serving traffic.
+- `WatchedInviteCreate` listener calls `setInvite` so newly-created invites are tracked from minute zero (otherwise the first use of a brand-new invite would look like the cache had `undefined → 1`).
+- `WatchedInviteDelete` listener calls `removeInvite` to keep the cache bounded.
+
+When a watched member's invite is used by a not-yet-watched joiner, `WatchedInviteMemberAdd` posts a watchlist-channel message with three buttons (`watch-invite-perm:…`, `watch-invite-1w:…`, `watch-invite-dismiss`). The button payload encodes joiner/inviter/code via `:`-separated values in the customId — fits in Discord's 100-char limit and survives bot restarts because `src/interaction-handlers/WatchInviteButton.ts` is a Sapphire `InteractionHandler` (stateless, matched on customId prefix, no in-memory tracking of the message). The handler is permission-gated to `ManageGuild`.
 
 ### Bot emojis (`src/util/Emojis.ts`)
 

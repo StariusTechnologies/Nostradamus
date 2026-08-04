@@ -36,5 +36,6 @@ declare global {
 declare module '@sapphire/framework' {
     interface Preconditions {
         Localized: never;
+        RoleTier: { tier: 'admin' | 'mod' | 'helper' };
     }
 }
