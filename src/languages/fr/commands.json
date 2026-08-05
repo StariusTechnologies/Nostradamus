@@ -289,6 +289,31 @@
         },
         "response": "Pong! Ça m'a pris {{latency}}ms."
     },
+    "def": {
+        "definition": {
+            "description": "Chercher la définition d'un mot sur le Wiktionnaire",
+            "options": {
+                "word": { "description": "Le mot à chercher. Choisissez une des suggestions du Wiktionnaire" },
+                "language": { "description": "La langue dans laquelle définir le mot. Par défaut, celle du serveur" }
+            }
+        },
+        "heading": "{{word}} ({{language}})",
+        "pageInfo": "Page {{current}} / {{total}}",
+        "previous": "← Précédent",
+        "next": "Suivant →",
+        "examples": "Exemples",
+        "examplesHeading": "Exemples pour {{word}} ({{language}})",
+        "noExamples": "{{emoji}} Le Wiktionnaire ne donne aucun exemple pour cette partie de l'entrée.",
+        "truncated": "Certains exemples ont été omis. La page complète est en lien ci-dessous.",
+        "notYours": "{{emoji}} Seul·e {{user}} peut parcourir cette entrée. Lancez la commande vous-même pour avoir la vôtre.",
+        "error": {
+            "empty": "{{emoji}} Veuillez fournir un mot à chercher.",
+            "missing": "{{emoji}} Le Wiktionnaire n'a pas de page pour **{{word}}**. Cherchez-le ici : {{url}}",
+            "noDefinition": "{{emoji}} Aucune définition n'a pu être lue sur la page du Wiktionnaire pour **{{word}}** : {{url}}",
+            "otherLanguages": "{{emoji}} Le Wiktionnaire n'a pas d'entrée en {{language}} pour **{{word}}**. Il en a une en : {{languages}}. {{url}}",
+            "unavailable": "{{emoji}} Le Wiktionnaire est injoignable. Veuillez réessayer dans un instant."
+        }
+    },
     "pronounce": {
         "definition": {
             "description": "Trouver des ressources de prononciation pour un mot dans la langue enseignée ici",

@@ -345,6 +345,31 @@
         },
         "response": "Pong! Took me {{latency}}ms."
     },
+    "def": {
+        "definition": {
+            "description": "Look a word up on Wiktionary",
+            "options": {
+                "word": { "description": "The word to look up. Pick one of the Wiktionary suggestions" },
+                "language": { "description": "Which language to define the word in. Defaults to the server's language" }
+            }
+        },
+        "heading": "{{word}} ({{language}})",
+        "pageInfo": "Page {{current}} / {{total}}",
+        "previous": "← Previous",
+        "next": "Next →",
+        "examples": "Examples",
+        "examplesHeading": "Examples for {{word}} ({{language}})",
+        "noExamples": "{{emoji}} Wiktionary attaches no example to this part of the entry.",
+        "truncated": "Some examples were left out. The full page is linked below.",
+        "notYours": "{{emoji}} Only {{user}} can browse this entry. Run the command yourself to get your own.",
+        "error": {
+            "empty": "{{emoji}} Please provide a word to look up.",
+            "missing": "{{emoji}} Wiktionary has no page for **{{word}}**. Search it there: {{url}}",
+            "noDefinition": "{{emoji}} No definition could be read from the Wiktionary page for **{{word}}**: {{url}}",
+            "otherLanguages": "{{emoji}} Wiktionary has no {{language}} entry for **{{word}}**. It does have one in: {{languages}}. {{url}}",
+            "unavailable": "{{emoji}} Wiktionary could not be reached. Please try again in a moment."
+        }
+    },
     "pronounce": {
         "definition": {
             "description": "Find pronunciation resources for a word in the language taught here",

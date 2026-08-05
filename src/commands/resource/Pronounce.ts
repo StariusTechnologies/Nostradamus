@@ -167,7 +167,7 @@ export default class extends LocalizedCommand {
             const response = await fetch(url, {
                 redirect: 'follow',
                 signal: controller.signal,
-                headers: { 'User-Agent': 'Nostradamus/5 (https://lily.expert)' },
+                headers: { 'User-Agent': 'Nostradamus/5 (https://frenchdiscord.com)' },
             });
 
             if (!response.ok) {
