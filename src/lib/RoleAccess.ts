@@ -30,9 +30,5 @@ export async function hasRoleAccess(member: GuildMember, tier: RoleTier): Promis
 
     const helperRoleId = await getSetting(member.guild.id, SettingKey.HelperRole);
 
-    if (helperRoleId && member.roles.cache.has(helperRoleId)) {
-        return true;
-    }
-
-    return false;
+    return !!helperRoleId && member.roles.cache.has(helperRoleId);
 }
