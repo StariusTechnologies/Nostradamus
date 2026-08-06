@@ -9,6 +9,7 @@ const bootstrap = new Bootstrap();
 
 bootstrap.initializeIntents();
 bootstrap.initializeClient();
+bootstrap.registerModules();
 
 container.logger.info('Application initialized');
 container.logger.info('Logging in...');

@@ -1,4 +1,7 @@
 import process from 'node:process';
+import { existsSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Client, IntentsBitField, Partials } from 'discord.js';
 import type { ClientOptions } from 'discord.js';
 import { config as configureEnvironment } from 'dotenv';
@@ -100,6 +103,46 @@ export class Bootstrap {
         this.client = new SapphireClient(clientOptions);
 
         return this.client;
+    }
+
+    /**
+     * Registers each module's piece directories (src/modules/<name>/<store>) with the matching Sapphire store,
+     * so pieces living under src/modules are loaded alongside the flat top-level stores. Must run after
+     * initializeClient (the stores exist) and before login (which loads every registered path).
+     */
+    public registerModules(): void {
+        const modulesRoot: string = fileURLToPath(new URL('../modules', import.meta.url));
+
+        if (!existsSync(modulesRoot)) {
+            return;
+        }
+
+        const moduleDirectories: string[] = readdirSync(modulesRoot, { withFileTypes: true })
+            .filter(entry => entry.isDirectory())
+            .map(entry => entry.name);
+
+        const registered: string[] = [];
+
+        for (const moduleName of moduleDirectories) {
+            let storeCount: number = 0;
+
+            for (const store of this.client.stores.values()) {
+                const storePath: string = join(modulesRoot, moduleName, store.name);
+
+                if (existsSync(storePath)) {
+                    store.registerPath(storePath);
+                    storeCount++;
+                }
+            }
+
+            if (storeCount > 0) {
+                registered.push(moduleName);
+            }
+        }
+
+        if (registered.length > 0) {
+            container.logger.info(`Registered ${registered.length} module(s): ${registered.join(', ')}`);
+        }
     }
 
     public async login(): Promise<Client> {
