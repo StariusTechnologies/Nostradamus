@@ -6,14 +6,17 @@ import { loadEmojis } from '../util/Emojis.js';
 import { getSetting, SettingKey } from '../lib/Settings.js';
 import { WatchService } from '../lib/WatchService.js';
 import { InviteCache } from '../lib/InviteCache.js';
-import { DAY } from '../util/DateTime.js';
+import { DAY, HOUR } from '../util/DateTime.js';
 
-const TRACKED_MESSAGE_TTL = 14 * DAY;
+const TRACKED_MESSAGE_TTL: number = 14 * DAY;
+const TRACKED_MESSAGE_SWEEP_INTERVAL: number = 6 * HOUR;
 
 @ApplyOptions<ListenerOptions>({
     event: Events.ClientReady,
 })
 export default class extends Listener {
+    private sweepTimer: NodeJS.Timeout | null = null;
+
     public async run(client: Client): Promise<void> {
         const nbGuilds = client.guilds.cache.size;
 
@@ -27,7 +30,25 @@ export default class extends Listener {
         await InviteCache.init();
         await this.sweepStaleTrackedMessages();
 
+        this.scheduleTrackedMessageSweep();
+
         await Promise.all(client.guilds.cache.map(guild => this.sweepCleanupChannel(guild)));
+    }
+
+    /**
+     * Keeps the tracked-message retention window honest even when the bot stays up for weeks: the startup sweep
+     * alone would let rows outlive the TTL for as long as the process runs.
+     */
+    private scheduleTrackedMessageSweep(): void {
+        if (this.sweepTimer) {
+            clearInterval(this.sweepTimer);
+        }
+
+        this.sweepTimer = setInterval((): void => {
+            void this.sweepStaleTrackedMessages();
+        }, TRACKED_MESSAGE_SWEEP_INTERVAL);
+
+        this.sweepTimer.unref();
     }
 
     private async sweepStaleTrackedMessages(): Promise<void> {
@@ -39,7 +60,9 @@ export default class extends Listener {
             });
 
             if (result.count > 0) {
-                this.container.logger.info(`Pruned ${result.count} tracked message(s) older than 14 days.`);
+                this.container.logger.info(
+                    `Pruned ${result.count} tracked message(s) older than ${TRACKED_MESSAGE_TTL / DAY} days.`
+                );
             }
         } catch (err) {
             this.container.logger.warn(`Could not prune stale tracked messages: ${err}`);
