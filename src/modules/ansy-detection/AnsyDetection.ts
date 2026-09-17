@@ -59,6 +59,7 @@ class AnsyDetectionImpl {
             owner.username,
             owner.displayName,
             ...BASE_SEARCH_WORDS,
+            ...BASE_SEARCH_WORDS.map(word => word.split('').reverse().join('')),
         ];
 
         if (ownerMember?.nickname) {

@@ -19,6 +19,17 @@ export const CANCEL_WORDS: readonly string[] = [
     'eventualyl',
     '9lila',
     'hamdolilah',
+    'tansi9',
+    'transition',
+    'wolfscared',
+    'liliana',
+    'lilac',
+    'transit',
+    'soliloquy',
+    'tkhalilek',
+    'hlila',
+    'hmdulilah',
+    'expansion',
 ];
 
 // Static name variations that signal someone is talking about the owner.
