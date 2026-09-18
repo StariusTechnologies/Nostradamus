@@ -4,7 +4,7 @@ import '@sapphire/plugin-subcommands/register';
 import { Bootstrap } from './setup/Bootstrap.js';
 import { createWatcher, instrumentSapphire } from '@disbots/sdk';
 
-ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite);
+ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
 
 const bootstrap = new Bootstrap();
 
