@@ -1,10 +1,4 @@
-import {
-    AttachmentBuilder,
-    type ChatInputCommandInteraction,
-    ContainerBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder,
-    MessageFlags,
-    TextDisplayBuilder,
-} from 'discord.js';
+import { type ChatInputCommandInteraction, MessageFlags, type TextChannel } from 'discord.js';
 import { type ApplicationCommandRegistry } from '@sapphire/framework';
 import { InteractionContextType } from 'discord-api-types/v10';
 import { fetchT } from '@sapphire/plugin-i18next';
@@ -16,7 +10,7 @@ import {
 } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
-import { fetchSnippetForReading, SNIPPET_NAME_MAX_LENGTH } from '../../lib/SnippetService.js';
+import { fetchSnippetForReading, sendSnippet, SNIPPET_NAME_MAX_LENGTH } from '../../lib/SnippetService.js';
 
 export default class extends LocalizedCommand {
     public override async chatInputRun(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -36,31 +30,13 @@ export default class extends LocalizedCommand {
             return;
         }
 
-        if (!channel || !channel.isTextBased() || !('send' in channel)) {
+        if (!channel || !channel.isTextBased()) {
             await interactionManager.edit(Components.error(t('commands:snippet.invalidChannel', { emoji: '❌' })));
 
             return;
         }
 
-        const container = new ContainerBuilder().addTextDisplayComponents(
-            new TextDisplayBuilder().setContent(snippet.content),
-        );
-
-        if (snippet.attachmentUrl) {
-            container.addMediaGalleryComponents(new MediaGalleryBuilder().addItems(
-                new MediaGalleryItemBuilder().setURL('attachment://attachment.webp'),
-            ));
-        }
-
-        await channel.send({
-            components: [container],
-            files: snippet.attachmentUrl ? [new AttachmentBuilder(
-                snippet.attachmentUrl,
-                { name: 'attachment.webp' },
-            )] : undefined,
-            flags: MessageFlags.IsComponentsV2,
-        });
-
+        await sendSnippet(channel as TextChannel, snippet);
         await interactionManager.edit(Components.confirm(t('commands:snippet.success', { emoji: '✅' })));
     }
 

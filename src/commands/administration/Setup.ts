@@ -55,6 +55,7 @@ export default class extends LocalizedSubcommand {
             SettingKey.ModeratorRole,
             SettingKey.HelperRole,
             SettingKey.AttachmentStorageChannel,
+            SettingKey.SnippetPrefix,
         ];
 
         for (const setting of settings) {
@@ -256,6 +257,10 @@ export default class extends LocalizedSubcommand {
                     .addChannelOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.AttachmentStorageChannel)
                         .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
+                        .setRequired(false), { subcommand: 'config' },
+                    ))
+                    .addStringOption(option => registerOptionDescriptions(this.name, option
+                        .setName(SettingKey.SnippetPrefix)
                         .setRequired(false), { subcommand: 'config' },
                     )),
                 ))

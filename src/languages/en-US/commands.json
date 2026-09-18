@@ -443,7 +443,9 @@
                         "primary-locale": { "description": "Default language for public-facing system messages (mod log, sujet, etc.)" },
                         "admin-role": { "description": "Role for the top mod tier (mod-tier text commands also accept this)" },
                         "moderator-role": { "description": "Role for the mod tier (helper-tier text commands also accept this)" },
-                        "helper-role": { "description": "Role for the helper tier (the lowest staff tier for text commands)" }
+                        "helper-role": { "description": "Role for the helper tier (the lowest staff tier for text commands)" },
+                        "attachment-storage-channel": { "description": "The channel where uploaded attachments are reposted so their links do not expire" },
+                        "snippet-prefix": { "description": "Prefix that triggers a snippet when a message starts with it (e.g. !)" }
                     }
                 },
                 "unset": {
@@ -684,6 +686,7 @@
             "canEdit": "Who can modify / delete"
         },
         "add": {
+            "imagesOnly": "{{emoji}} A snippet attachment has to be an image.",
             "noContent": "{{emoji}} That message has no text to save. A snippet needs some content.",
             "contentTooLong": "{{emoji}} That message is too long to save as a snippet ({{max}} characters max).",
             "onlyOne": "{{emoji}} You already own a snippet, and you can only have one. Delete it first to create another.",
@@ -695,6 +698,7 @@
             }
         },
         "edit": {
+            "imagesOnly": "{{emoji}} A snippet attachment has to be an image.",
             "notFound": "{{emoji}} This snippet does not exist, or you are not allowed to edit it.",
             "raced": "{{emoji}} The snippet was deleted while you were editing it.",
             "confirm": "{{emoji}} Done! The snippet `{{name}}` has been edited.",

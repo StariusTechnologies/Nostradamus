@@ -1,5 +1,11 @@
 import { container } from '@sapphire/framework';
-import type { GuildMember } from 'discord.js';
+import {
+    AttachmentBuilder,
+    ContainerBuilder,
+    type GuildMember, type GuildTextBasedChannel,
+    MediaGalleryBuilder, MediaGalleryItemBuilder, MessageFlags,
+    TextDisplayBuilder,
+} from 'discord.js';
 import type { Snippet } from '@prisma/client';
 import { isMemberStaff } from './StaffService.js';
 
@@ -231,4 +237,37 @@ export async function deleteSnippetAlias(idAlias: number) {
     }
 
     await container.prisma.snippetAlias.delete({ where: { id: snippetAlias.id } });
+}
+
+export async function sendSnippet(channel: GuildTextBasedChannel, snippet: Snippet) {
+    const componentContainer = new ContainerBuilder().addTextDisplayComponents(
+        new TextDisplayBuilder().setContent(snippet.content),
+    );
+
+    let attachmentName = 'attachment.webp';
+
+    try {
+        const attachmentPathname = snippet.attachmentUrl ? new URL(snippet.attachmentUrl).pathname : '';
+
+        attachmentName = attachmentPathname.includes('.')
+            ? `attachment${attachmentPathname.slice(attachmentPathname.lastIndexOf('.'))}`
+            : 'attachment.webp';
+    } catch (error) {
+        container.logger.debug(error);
+    }
+
+    if (snippet.attachmentUrl) {
+        componentContainer.addMediaGalleryComponents(new MediaGalleryBuilder().addItems(
+            new MediaGalleryItemBuilder().setURL(`attachment://${attachmentName}`),
+        ));
+    }
+
+    return channel.send({
+        components: [componentContainer],
+        files: snippet.attachmentUrl ? [new AttachmentBuilder(
+            snippet.attachmentUrl,
+            { name: attachmentName },
+        )] : undefined,
+        flags: MessageFlags.IsComponentsV2,
+    });
 }

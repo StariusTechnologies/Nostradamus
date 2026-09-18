@@ -26,7 +26,11 @@ import { fetchT } from '@sapphire/plugin-i18next';
 import { ModalBuilder, type ModalSelectedMentionables, type ModalSubmitInteraction, TextInputStyle } from 'discord.js';
 import { MINUTE } from '../../util/DateTime.js';
 import { Emojis } from '../../util/Emojis.js';
-import { isAttachmentStorageChannelConfigured, repostAttachment } from '../../lib/AttachmentService.js';
+import {
+    isAttachmentImage,
+    isAttachmentStorageChannelConfigured,
+    repostAttachment,
+} from '../../lib/AttachmentService.js';
 import { LabelBuilder } from '@discordjs/builders';
 import {
     registerCommandDescriptions,
@@ -161,10 +165,20 @@ export default class extends LocalizedSubcommand {
         }
 
         const content = submit.fields.getTextInputValue('content');
-        const attachmentUrl = withAttachment
-            ? submit.fields.getUploadedFiles('attachment', false)?.first()?.url
+        const attachment = withAttachment
+            ? submit.fields.getUploadedFiles('attachment', false)?.first()
             : null;
 
+        if (attachment && !isAttachmentImage(attachment)) {
+            await submit.reply({
+                ...Components.error(t('commands:manage-snippets.add.imagesOnly', { emoji: '❌' })),
+                flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2,
+            });
+
+            return;
+        }
+
+        const attachmentUrl = attachment?.url;
         const raced = await fetchSnippet(name, interaction.guildId!);
 
         if (raced) {
@@ -254,9 +268,20 @@ export default class extends LocalizedSubcommand {
         }
 
         const content = submit.fields.getTextInputValue('content');
-        const attachmentUrl = withAttachment
-            ? submit.fields.getUploadedFiles('attachment', false)?.first()?.url
+        const attachment = withAttachment
+            ? submit.fields.getUploadedFiles('attachment', false)?.first()
             : null;
+
+        if (attachment && !isAttachmentImage(attachment)) {
+            await submit.reply({
+                ...Components.error(t('commands:manage-snippets.edit.imagesOnly', { emoji: '❌' })),
+                flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2,
+            });
+
+            return;
+        }
+
+        const attachmentUrl = attachment?.url;
         const raced = (await fetchSnippet(name, interaction.guildId!)) === null;
 
         if (raced) {

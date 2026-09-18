@@ -387,7 +387,9 @@
                         "primary-locale": { "description": "Langue par défaut pour les messages système publics (mod log, sujet, etc.)" },
                         "admin-role": { "description": "Rôle du palier le plus élevé (les commandes texte de palier mod l'acceptent aussi)" },
                         "moderator-role": { "description": "Rôle du palier mod (les commandes texte de palier helper l'acceptent aussi)" },
-                        "helper-role": { "description": "Rôle du palier helper (le palier le plus bas pour les commandes texte)" }
+                        "helper-role": { "description": "Rôle du palier helper (le palier le plus bas pour les commandes texte)" },
+                        "attachment-storage-channel": { "description": "Le canal où les pièces jointes sont repostées afin que leurs liens n'expirent pas" },
+                        "snippet-prefix": { "description": "Préfixe qui déclenche un snippet quand un message commence par celui-ci (ex. !)" }
                     }
                 },
                 "unset": {
@@ -537,7 +539,7 @@
             },
             "description": "Envoie un texte pré-enregistré (appelé \"snippet\" ou \"tag\")"
         },
-        "invalidChannel": "{{emoji}} Je ne peux pas envoyer de snippet dans ce salon.",
+        "invalidChannel": "{{emoji}} Je ne peux pas envoyer de snippet dans ce canal.",
         "success": "{{emoji}} C'est bon ! Le snippet a été envoyé.",
         "noSnippet": "{{emoji}} Ce snippet n'existe pas, ou vous n'avez pas le droit de l'utiliser."
     },
@@ -628,6 +630,7 @@
             "canEdit": "Qui peut le modifier / supprimer"
         },
         "add": {
+            "imagesOnly": "{{emoji}} La pièce jointe d'un snippet doit être une image.",
             "noContent": "{{emoji}} Ce message ne contient aucun texte à enregistrer. Un snippet a besoin de contenu.",
             "contentTooLong": "{{emoji}} Ce message est trop long pour être enregistré en snippet ({{max}} caractères maximum).",
             "onlyOne": "{{emoji}} Vous possédez déjà un snippet, et vous ne pouvez en avoir qu'un seul. Supprimez-le d'abord pour en créer un autre.",
@@ -639,6 +642,7 @@
             }
         },
         "edit": {
+            "imagesOnly": "{{emoji}} La pièce jointe d'un snippet doit être une image.",
             "notFound": "{{emoji}} Ce snippet n'existe pas, ou vous n'avez pas le droit de le modifier.",
             "raced": "{{emoji}} Le snippet a été supprimé pendant que vous le modifiiez.",
             "confirm": "{{emoji}} C'est bon ! Le snippet `{{name}}` a été modifié.",

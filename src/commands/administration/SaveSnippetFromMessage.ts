@@ -15,7 +15,7 @@ import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
 import { Emojis } from '../../util/Emojis.js';
 import { MINUTE } from '../../util/DateTime.js';
-import { repostAttachment } from '../../lib/AttachmentService.js';
+import { isAttachmentImage, repostAttachment } from '../../lib/AttachmentService.js';
 import { isMemberStaff } from '../../lib/StaffService.js';
 import {
     createSnippet,
@@ -124,12 +124,23 @@ export default class extends LocalizedCommand {
             return;
         }
 
+        const attachment = targetMessage.attachments.first();
+
+        if (attachment && !isAttachmentImage(attachment)) {
+            await submit.reply({
+                ...Components.error(t('commands:manage-snippets.add.imagesOnly', { emoji: '❌' })),
+                flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2,
+            });
+
+            return;
+        }
+
         await createSnippet(
             name,
             content,
             interaction.guildId!,
             interaction.user.id,
-            await repostAttachment(interaction.guildId!, targetMessage.attachments.first()?.url),
+            await repostAttachment(interaction.guildId!, attachment?.url),
         );
 
         await submit.reply({

@@ -12,6 +12,7 @@ export enum SettingKey {
     ModeratorRole = 'moderator-role',
     HelperRole = 'helper-role',
     AttachmentStorageChannel = 'attachment-storage-channel',
+    SnippetPrefix = 'snippet-prefix',
 }
 
 export const DEFAULT_PRIMARY_LOCALE = 'en-US';
