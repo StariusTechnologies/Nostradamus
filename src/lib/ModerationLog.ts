@@ -6,11 +6,11 @@ import {
     type TextChannel,
     TextDisplayBuilder,
     ThumbnailBuilder,
-    type User
+    type User,
 } from 'discord.js';
 import { MessageFlags } from 'discord-api-types/v10';
 import { container } from '@sapphire/framework';
-import { DEFAULT_PRIMARY_LOCALE, getSetting, SettingKey } from './Settings.js';
+import { DEFAULT_PRIMARY_LOCALE, getSetting, SettingKey } from './SettingsService.js';
 import { Colors } from '../util/Colors.js';
 
 export type ModerationAction = 'ban' | 'kick' | 'unban';
@@ -44,7 +44,7 @@ export async function post(
     guild: Guild,
     user: User,
     action: ModerationAction,
-    rawReason: string | null
+    rawReason: string | null,
 ): Promise<Message | null> {
     const channel = await resolveChannel(guild);
 

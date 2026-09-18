@@ -8,7 +8,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 export default class extends Listener {
     public async run(
         messages: Collection<Snowflake, Message | PartialMessage>,
-        channel: GuildTextBasedChannel
+        channel: GuildTextBasedChannel,
     ): Promise<void> {
         const ids = [...messages.keys()];
 

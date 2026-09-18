@@ -1,5 +1,5 @@
 import { type GuildMember, PermissionsBitField } from 'discord.js';
-import { getSetting, SettingKey } from './Settings.js';
+import { getSetting, SettingKey } from './SettingsService.js';
 
 export type RoleTier = 'admin' | 'mod' | 'helper';
 

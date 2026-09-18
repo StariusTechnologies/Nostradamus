@@ -28,9 +28,9 @@
         "@stylistic/js/comma-dangle": ["error", {
             "arrays": "always-multiline",
             "objects": "always-multiline",
-            "imports": "never",
-            "exports": "never",
-            "functions": "never"
+            "imports": "always-multiline",
+            "exports": "always-multiline",
+            "functions": "always-multiline"
         }],
         "no-extra-boolean-cast": "off",
         "curly": ["error", "all"],

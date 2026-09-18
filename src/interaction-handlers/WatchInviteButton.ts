@@ -7,12 +7,12 @@ import {
     type MessageActionRowComponentBuilder,
     type Message,
     PermissionsBitField,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { MessageFlags } from 'discord-api-types/v10';
 import {
     InteractionHandler,
-    InteractionHandlerTypes
+    InteractionHandlerTypes,
 } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { WatchService } from '../lib/WatchService.js';
@@ -140,7 +140,7 @@ export default class extends InteractionHandler {
     }
 
     private buildDisabledRow(
-        customId: string
+        customId: string,
     ): ActionRowBuilder<MessageActionRowComponentBuilder> | null {
         if (customId === DISMISS_ID) {
             return null;

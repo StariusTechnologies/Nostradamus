@@ -8,9 +8,9 @@ import {
     registerCommandDescriptions,
     registerOptionDescriptions,
     registerSubcommandDescriptions,
-    registerSubcommandGroupDescriptions
+    registerSubcommandGroupDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
-import { removeSetting, saveSetting, SettingKey } from '../../lib/Settings.js';
+import { removeSetting, saveSetting, SettingKey } from '../../lib/SettingsService.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
 import { Emojis } from '../../util/Emojis.js';
@@ -54,6 +54,7 @@ export default class extends LocalizedSubcommand {
             SettingKey.AdminRole,
             SettingKey.ModeratorRole,
             SettingKey.HelperRole,
+            SettingKey.AttachmentStorageChannel,
         ];
 
         for (const setting of settings) {
@@ -74,7 +75,7 @@ export default class extends LocalizedSubcommand {
         }
 
         await interactionManager.edit(Components.confirm(
-            t('commands:setup.subcommand.config.confirm', { emoji: Emojis.RainbowSheep })
+            t('commands:setup.subcommand.config.confirm', { emoji: Emojis.RainbowSheep }),
         ));
     }
 
@@ -100,7 +101,7 @@ export default class extends LocalizedSubcommand {
             t('commands:setup.subcommand.unset.confirm', {
                 emoji: Emojis.RainbowSheep,
                 key,
-            })
+            }),
         ));
     }
 
@@ -133,7 +134,7 @@ export default class extends LocalizedSubcommand {
             t('commands:setup.subcommand.listableRole.add.confirm', {
                 emoji: Emojis.RainbowSheep,
                 roleName: role.name,
-            })
+            }),
         ));
     }
 
@@ -155,7 +156,7 @@ export default class extends LocalizedSubcommand {
                 t('commands:setup.subcommand.listableRole.remove.notConfigured', {
                     emoji: '❌',
                     roleName: role.name,
-                })
+                }),
             ));
 
             return;
@@ -169,7 +170,7 @@ export default class extends LocalizedSubcommand {
             t('commands:setup.subcommand.listableRole.remove.confirm', {
                 emoji: Emojis.RainbowSheep,
                 roleName: role.name,
-            })
+            }),
         ));
     }
 
@@ -211,47 +212,52 @@ export default class extends LocalizedSubcommand {
                     .addChannelOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.BotLogChannel)
                         .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
-                        .setRequired(false), { subcommand: 'config' }
+                        .setRequired(false), { subcommand: 'config' },
                     ))
                     .addRoleOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.NativeLanguageRole)
-                        .setRequired(false), { subcommand: 'config' }
+                        .setRequired(false), { subcommand: 'config' },
                     ))
                     .addChannelOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.AutoCleanupChannel)
                         .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
-                        .setRequired(false), { subcommand: 'config' }
+                        .setRequired(false), { subcommand: 'config' },
                     ))
                     .addChannelOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.WatchlistChannel)
                         .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
-                        .setRequired(false), { subcommand: 'config' }
+                        .setRequired(false), { subcommand: 'config' },
                     ))
                     .addChannelOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.ModerationLogChannel)
                         .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
-                        .setRequired(false), { subcommand: 'config' }
+                        .setRequired(false), { subcommand: 'config' },
                     ))
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.PrimaryLocale)
                         .setRequired(false)
                         .addChoices(
                             { name: 'English (US)', value: 'en-US' },
-                            { name: 'Français', value: 'fr' }
-                        ), { subcommand: 'config' }
+                            { name: 'Français', value: 'fr' },
+                        ), { subcommand: 'config' },
                     ))
                     .addRoleOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.AdminRole)
-                        .setRequired(false), { subcommand: 'config' }
+                        .setRequired(false), { subcommand: 'config' },
                     ))
                     .addRoleOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.ModeratorRole)
-                        .setRequired(false), { subcommand: 'config' }
+                        .setRequired(false), { subcommand: 'config' },
                     ))
                     .addRoleOption(option => registerOptionDescriptions(this.name, option
                         .setName(SettingKey.HelperRole)
-                        .setRequired(false), { subcommand: 'config' }
+                        .setRequired(false), { subcommand: 'config' },
                     ))
+                    .addChannelOption(option => registerOptionDescriptions(this.name, option
+                        .setName(SettingKey.AttachmentStorageChannel)
+                        .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
+                        .setRequired(false), { subcommand: 'config' },
+                    )),
                 ))
                 .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
                     .setName('unset')
@@ -259,9 +265,9 @@ export default class extends LocalizedSubcommand {
                         .setName('key')
                         .setRequired(true)
                         .addChoices(
-                            ...Object.values(SettingKey).map(value => ({ name: value, value }))
-                        ), { subcommand: 'unset' }
-                    ))
+                            ...Object.values(SettingKey).map(value => ({ name: value, value })),
+                        ), { subcommand: 'unset' },
+                    )),
                 ))
                 .addSubcommandGroup(group => registerSubcommandGroupDescriptions(this.name, group
                     .setName(LISTABLE_ROLE_GROUP)
@@ -269,21 +275,21 @@ export default class extends LocalizedSubcommand {
                         .setName('add')
                         .addRoleOption(option => registerOptionDescriptions(this.name, option
                             .setName('role')
-                            .setRequired(true), { subcommandGroup: LISTABLE_ROLE_GROUP, subcommand: 'add' }
-                        )), LISTABLE_ROLE_GROUP
+                            .setRequired(true), { subcommandGroup: LISTABLE_ROLE_GROUP, subcommand: 'add' },
+                        )), LISTABLE_ROLE_GROUP,
                     ))
                     .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
                         .setName('remove')
                         .addRoleOption(option => registerOptionDescriptions(this.name, option
                             .setName('role')
-                            .setRequired(true), { subcommandGroup: LISTABLE_ROLE_GROUP, subcommand: 'remove' }
-                        )), LISTABLE_ROLE_GROUP
+                            .setRequired(true), { subcommandGroup: LISTABLE_ROLE_GROUP, subcommand: 'remove' },
+                        )), LISTABLE_ROLE_GROUP,
                     ))
                     .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
-                        .setName('list'), LISTABLE_ROLE_GROUP
-                    ))
-                ))
-            )
+                        .setName('list'), LISTABLE_ROLE_GROUP,
+                    )),
+                )),
+            ),
         );
     }
 }

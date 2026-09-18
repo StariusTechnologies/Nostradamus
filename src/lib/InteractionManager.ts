@@ -8,7 +8,7 @@ import {
     type Message,
     type MessageEditOptions,
     MessageFlags,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 
 type ReplyInput = string | InteractionReplyOptions;
@@ -63,7 +63,7 @@ export class InteractionManager
     }
 
     public async reply(
-        input: ReplyInput
+        input: ReplyInput,
     ): Promise<InteractionCallbackResponse | InteractionResponse | Message> {
         const options = normalizeReply(input);
 
@@ -83,13 +83,13 @@ export class InteractionManager
     }
 
     private async replyNotReplied(
-        options: InteractionReplyOptions
+        options: InteractionReplyOptions,
     ): Promise<InteractionCallbackResponse | InteractionResponse | Message> {
         return this.interaction.reply(options);
     }
 
     private async replyReplied(
-        options: InteractionReplyOptions
+        options: InteractionReplyOptions,
     ): Promise<InteractionCallbackResponse | InteractionResponse | Message> {
         this.followedUpMessage = await this.interaction.followUp(options);
 

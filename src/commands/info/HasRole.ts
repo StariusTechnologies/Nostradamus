@@ -12,7 +12,7 @@ import {
     type Message,
     type Role,
     SeparatorBuilder,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { InteractionContextType, MessageFlags } from 'discord-api-types/v10';
 import { type ApplicationCommandRegistry } from '@sapphire/framework';
@@ -45,7 +45,7 @@ export default class extends LocalizedCommand {
 
         if (!listable) {
             await interactionManager.edit(Components.error(
-                t('commands:hasrole.error.notListable', { emoji: '❌' })
+                t('commands:hasrole.error.notListable', { emoji: '❌' }),
             ));
 
             return;
@@ -55,7 +55,7 @@ export default class extends LocalizedCommand {
 
         if (!role) {
             await interactionManager.edit(Components.error(
-                t('commands:hasrole.error.noRole', { emoji: '❌' })
+                t('commands:hasrole.error.noRole', { emoji: '❌' }),
             ));
 
             return;
@@ -156,9 +156,9 @@ export default class extends LocalizedCommand {
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('role')
                     .setAutocomplete(true)
-                    .setRequired(true)
-                ))
-            )
+                    .setRequired(true),
+                )),
+            ),
         );
     }
 
@@ -168,7 +168,7 @@ export default class extends LocalizedCommand {
         members: GuildMember[],
         page: number,
         totalPages: number,
-        buttonsDisabled = false
+        buttonsDisabled = false,
     ): ContainerBuilder {
         const start = page * PAGE_SIZE;
         const slice = members.slice(start, start + PAGE_SIZE);

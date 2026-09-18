@@ -9,7 +9,7 @@ import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
 import { InteractionContextType } from 'discord-api-types/v10';
 import { error } from '../../lib/Logger.js';
-import { getSetting, SettingKey } from '../../lib/Settings.js';
+import { getSetting, SettingKey } from '../../lib/SettingsService.js';
 
 export default class extends LocalizedCommand {
     public override async chatInputRun(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -27,11 +27,11 @@ export default class extends LocalizedCommand {
             error(
                 guild.id,
                 `Could not retrieve the native language role ${nativeLanguageRoleId}`,
-                this.logFooter
+                this.logFooter,
             );
 
             await interactionManager.edit(Components.error(
-                t('commands:language.error.noNativeLanguageRole', { emoji: '❌' })
+                t('commands:language.error.noNativeLanguageRole', { emoji: '❌' }),
             ));
 
             return;
@@ -40,7 +40,7 @@ export default class extends LocalizedCommand {
         if (selectedRoleId === nativeLanguageRole.id) {
             await interactionManager.edit(Components.error(t(
                 'commands:language.error.nativeLanguageRole',
-                { emoji: '❌', roleName: nativeLanguageRole.name }
+                { emoji: '❌', roleName: nativeLanguageRole.name },
             )));
 
             return;
@@ -51,7 +51,7 @@ export default class extends LocalizedCommand {
         if (!member) {
             error(guild.id, `Could not retrieve member ${interaction.user.id}`, this.logFooter);
             await interactionManager.edit(Components.error(
-                t('commands:language.error.noMember', { emoji: '❌' })
+                t('commands:language.error.noMember', { emoji: '❌' }),
             ));
 
             return;
@@ -60,7 +60,7 @@ export default class extends LocalizedCommand {
         if (member.roles.cache.has(nativeLanguageRole.id)) {
             await interactionManager.edit(Components.error(t(
                 'commands:language.error.hasNativeLanguageRole',
-                { emoji: '❌', roleName: nativeLanguageRole.name }
+                { emoji: '❌', roleName: nativeLanguageRole.name },
             )));
 
             return;
@@ -70,7 +70,7 @@ export default class extends LocalizedCommand {
 
         if (!role) {
             await interactionManager.edit(Components.error(
-                t('commands:language.error.noRole', { emoji: '❌' })
+                t('commands:language.error.noRole', { emoji: '❌' }),
             ));
 
             return;
@@ -83,19 +83,19 @@ export default class extends LocalizedCommand {
                 error(
                     guild.id,
                     `Could not remove native language role for ${member.id}: ${err}`,
-                    this.logFooter
+                    this.logFooter,
                 );
 
                 this.container.logger.error(err);
                 await interactionManager.edit(Components.error(
-                    t('commands:language.error.couldNotRemoveNativeRole', { emoji: '❌' })
+                    t('commands:language.error.couldNotRemoveNativeRole', { emoji: '❌' }),
                 ));
 
                 return;
             }
 
             await interactionManager.edit(Components.confirm(
-                t('commands:language.confirm.removed', { emoji: Emojis.RainbowSheep, roleName: role.name })
+                t('commands:language.confirm.removed', { emoji: Emojis.RainbowSheep, roleName: role.name }),
             ));
 
             return;
@@ -115,12 +115,12 @@ export default class extends LocalizedCommand {
                 error(
                     guild.id,
                     `Could not remove other native language roles for ${member.id}: ${err}`,
-                    this.logFooter
+                    this.logFooter,
                 );
 
                 this.container.logger.error(err);
                 await interactionManager.edit(Components.error(
-                    t('commands:language.error.couldNotRemoveOtherNativeRoles', { emoji: '❌' })
+                    t('commands:language.error.couldNotRemoveOtherNativeRoles', { emoji: '❌' }),
                 ));
 
                 return;
@@ -133,19 +133,19 @@ export default class extends LocalizedCommand {
             error(
                 guild.id,
                 `Could not add native language role for ${member.id}: ${err}`,
-                this.logFooter
+                this.logFooter,
             );
 
             this.container.logger.error(err);
             await interactionManager.edit(Components.error(
-                t('commands:language.error.couldNotAddRole', { emoji: '❌' })
+                t('commands:language.error.couldNotAddRole', { emoji: '❌' }),
             ));
 
             return;
         }
 
         await interactionManager.edit(Components.confirm(
-            t('commands:language.confirm.newRole', { emoji: Emojis.RainbowSheep, roleName: role.name })
+            t('commands:language.confirm.newRole', { emoji: Emojis.RainbowSheep, roleName: role.name }),
         ));
     }
 
@@ -186,9 +186,9 @@ export default class extends LocalizedCommand {
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('language')
                     .setAutocomplete(true)
-                    .setRequired(true)
-                ))
-            )
+                    .setRequired(true),
+                )),
+            ),
         );
     }
 }

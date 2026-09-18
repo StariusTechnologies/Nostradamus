@@ -7,7 +7,7 @@ import {
     type MessageActionRowComponentBuilder,
     MessageFlags,
     StringSelectMenuBuilder,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { LanguageEmoji, Languages, multipleT } from '../lib/i18n/LanguageManager.js';
 import { Locale } from 'discord-api-types/v10';
@@ -63,7 +63,7 @@ export class Localized extends Precondition {
         const t = container.i18n.getT(selectedLocale);
         const confirmText = t(
             'preconditions:localized.configuration.confirm',
-            { emoji: LanguageEmoji[selectedLocale as Locale]!() }
+            { emoji: LanguageEmoji[selectedLocale as Locale]!() },
         );
 
         const confirmDisplay = new TextDisplayBuilder().setContent(`## ${title}\n${confirmText}`);

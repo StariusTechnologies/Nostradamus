@@ -4,7 +4,7 @@ import {
     type Message,
     SeparatorBuilder,
     TextDisplayBuilder,
-    type User
+    type User,
 } from 'discord.js';
 import { MessageFlags } from 'discord-api-types/v10';
 import { container } from '@sapphire/framework';
@@ -89,12 +89,12 @@ class AnsyDetectionImpl {
         const notification: ContainerBuilder = new ContainerBuilder()
             .setAccentColor(Colors.Info)
             .addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`### 💬 Someone talked about you\n${meta}`)
+                new TextDisplayBuilder().setContent(`### 💬 Someone talked about you\n${meta}`),
             )
             .addSeparatorComponents(new SeparatorBuilder())
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(message.content),
-                new TextDisplayBuilder().setContent(`-# [Jump to message](${message.url})`)
+                new TextDisplayBuilder().setContent(`-# [Jump to message](${message.url})`),
             );
 
         await owner.send({

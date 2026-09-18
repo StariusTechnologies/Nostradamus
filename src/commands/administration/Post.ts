@@ -17,7 +17,7 @@ export default class extends LocalizedCommand {
 
         if (interaction.user.id !== process.env.OWNER) {
             await interactionManager.edit(Components.error(
-                `## ${t('commands:post.unauthorized.title')}\n${t('commands:post.unauthorized.description')}`
+                `## ${t('commands:post.unauthorized.title')}\n${t('commands:post.unauthorized.description')}`,
             ));
 
             return;
@@ -55,7 +55,7 @@ export default class extends LocalizedCommand {
 
         if (!channel || !channel.isTextBased()) {
             await interactionManager.edit(Components.error(
-                `## ${t('commands:post.invalidChannel.title')}\n${t('commands:post.invalidChannel.description')}`
+                `## ${t('commands:post.invalidChannel.title')}\n${t('commands:post.invalidChannel.description')}`,
             ));
 
             return;
@@ -77,14 +77,14 @@ export default class extends LocalizedCommand {
             this.container.logger.debug(error as Error);
             await interactionManager.edit(Components.error(
                 `## ${t('commands:post.unknownError.title')}\n`
-                + `${t('commands:post.unknownError.description', { errorMessage: String(error) })}`
+                + `${t('commands:post.unknownError.description', { errorMessage: String(error) })}`,
             ));
 
             return;
         }
 
         await interactionManager.edit(Components.confirm(
-            `## ${t('commands:post.posted.title')}\n${t('commands:post.posted.description')}`
+            `## ${t('commands:post.posted.title')}\n${t('commands:post.posted.description')}`,
         ));
     }
 
@@ -96,25 +96,25 @@ export default class extends LocalizedCommand {
                 .setContexts(InteractionContextType.Guild)
                 .addStringOption(builder => registerOptionDescriptions(this.name, builder
                     .setName('message')
-                    .setRequired(true)
+                    .setRequired(true),
                 ))
                 .addChannelOption(builder => registerOptionDescriptions(this.name, builder
                     .setName('channel')
-                    .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread)
+                    .addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread),
                 ))
                 .addStringOption(builder => registerOptionDescriptions(this.name, builder
-                    .setName('reply-to')
-                ))
-            )
+                    .setName('reply-to'),
+                )),
+            ),
         );
     }
 
     private async sendInvalidMessageIdError(
         interactionManager: InteractionManager,
-        t: Awaited<ReturnType<typeof fetchT>>
+        t: Awaited<ReturnType<typeof fetchT>>,
     ): Promise<void> {
         await interactionManager.edit(Components.error(
-            `## ${t('commands:post.invalidMessageId.title')}\n${t('commands:post.invalidMessageId.description')}`
+            `## ${t('commands:post.invalidMessageId.title')}\n${t('commands:post.invalidMessageId.description')}`,
         ));
     }
 }

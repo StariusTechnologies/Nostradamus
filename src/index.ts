@@ -2,14 +2,19 @@ import { ApplicationCommandRegistries, container, RegisterBehavior } from '@sapp
 import '@sapphire/plugin-i18next/register';
 import '@sapphire/plugin-subcommands/register';
 import { Bootstrap } from './setup/Bootstrap.js';
+import { createWatcher, instrumentSapphire } from '@disbots/sdk';
 
-ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
+ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite);
 
 const bootstrap = new Bootstrap();
 
 bootstrap.initializeIntents();
-bootstrap.initializeClient();
+
+const client = bootstrap.initializeClient();
+const watcher = await createWatcher({ client });
+
 bootstrap.registerModules();
+instrumentSapphire(client, watcher);
 
 container.logger.info('Application initialized');
 container.logger.info('Logging in...');

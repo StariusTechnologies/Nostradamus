@@ -3,27 +3,27 @@ import {
     ContainerBuilder,
     type Invite,
     type Message,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { InteractionContextType, MessageFlags } from 'discord-api-types/v10';
 import {
     type ApplicationCommandRegistry,
     type Args,
     Command as SapphireCommand,
-    container as sapphireContainer
+    container as sapphireContainer,
 } from '@sapphire/framework';
 import { fetchT } from '@sapphire/plugin-i18next';
 import { type TFunction } from 'i18next';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import {
     registerCommandDescriptions,
-    registerOptionDescriptions
+    registerOptionDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
 import { Colors } from '../../util/Colors.js';
 import { DAY, HOUR, MINUTE, WEEK } from '../../util/DateTime.js';
-import { DEFAULT_PRIMARY_LOCALE, getSetting, SettingKey } from '../../lib/Settings.js';
+import { DEFAULT_PRIMARY_LOCALE, getSetting, SettingKey } from '../../lib/SettingsService.js';
 import { purgeUser, type PurgeResult } from '../../lib/PurgeUserService.js';
 import { parseUserToken } from '../../util/Discord.js';
 
@@ -60,7 +60,7 @@ export default class extends LocalizedCommand {
 
         if (durationInput && this.parseDuration(durationInput) === null) {
             await interactionManager.edit(Components.error(
-                t('commands:purge-user.error.invalidDuration', { emoji: '❌' })
+                t('commands:purge-user.error.invalidDuration', { emoji: '❌' }),
             ));
 
             return;
@@ -68,7 +68,7 @@ export default class extends LocalizedCommand {
 
         if (interaction.user.id === user.id) {
             await interactionManager.edit(Components.error(
-                t('commands:purge-user.error.selfPurge', { emoji: '❌' })
+                t('commands:purge-user.error.selfPurge', { emoji: '❌' }),
             ));
 
             return;
@@ -92,7 +92,7 @@ export default class extends LocalizedCommand {
 
         if (!rest) {
             await message.reply(Components.error(
-                t('commands:purge-user.error.missingTarget', { emoji: '❌' })
+                t('commands:purge-user.error.missingTarget', { emoji: '❌' }),
             )).catch(() => null);
 
             return;
@@ -117,7 +117,7 @@ export default class extends LocalizedCommand {
 
         if (ids.length === 0) {
             await message.reply(Components.error(
-                t('commands:purge-user.error.noValidIds', { emoji: '❌' })
+                t('commands:purge-user.error.noValidIds', { emoji: '❌' }),
             )).catch(() => null);
 
             return;
@@ -156,13 +156,13 @@ export default class extends LocalizedCommand {
                 .setContexts(InteractionContextType.Guild)
                 .addUserOption(option => registerOptionDescriptions(this.name, option
                     .setName('user')
-                    .setRequired(true)
+                    .setRequired(true),
                 ))
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('duration')
-                    .setRequired(false)
-                ))
-            )
+                    .setRequired(false),
+                )),
+            ),
         );
     }
 
@@ -208,7 +208,7 @@ export default class extends LocalizedCommand {
         t: TFunction,
         userId: string,
         username: string,
-        result: PurgeResult
+        result: PurgeResult,
     ): ContainerBuilder {
         const heading = t('commands:purge-user.heading', { username, userId });
         const deletedLine = result.deletedCount > 0
@@ -237,7 +237,7 @@ export default class extends LocalizedCommand {
         return new ContainerBuilder()
             .setAccentColor(Colors.Error)
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(
-                t('commands:purge-user.error.selfPurge', { emoji: '❌' })
+                t('commands:purge-user.error.selfPurge', { emoji: '❌' }),
             ));
     }
 
@@ -248,7 +248,7 @@ export default class extends LocalizedCommand {
             .concat(
                 invites.length > 20
                     ? [`-# (… and ${invites.length - 20} more)`]
-                    : []
+                    : [],
             );
     }
 }

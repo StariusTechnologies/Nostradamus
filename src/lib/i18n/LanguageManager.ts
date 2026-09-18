@@ -1,7 +1,7 @@
 import type {
     SlashCommandBuilder,
     SlashCommandSubcommandBuilder,
-    SlashCommandSubcommandGroupBuilder
+    SlashCommandSubcommandGroupBuilder,
 } from '@discordjs/builders';
 import { container } from '@sapphire/framework';
 import {
@@ -15,7 +15,7 @@ import {
     type SlashCommandRoleOption,
     type SlashCommandStringOption,
     type SlashCommandSubcommandsOnlyBuilder,
-    type SlashCommandUserOption
+    type SlashCommandUserOption,
 } from 'discord.js';
 import { Locale, type LocalizationMap } from 'discord-api-types/v10';
 import i18next, { type TFunction } from 'i18next';
@@ -57,12 +57,54 @@ const setDescriptions = (interactivePiece: SharedNameAndDescription, key: string
             carry[language as Locale] = container.i18n.getT(language)(key);
 
             return carry;
-        }, {})
+        }, {}),
     );
 };
 
+export type LocalizedProperty = 'name' | 'description';
+
+type NameLocalizable = {
+    name?: string,
+    setName(name: string): unknown,
+    setNameLocalizations(localizedNames: LocalizationMap | null): unknown,
+};
+
+const setNames = <T extends NameLocalizable>(interactivePiece: T, key: string): T => {
+    interactivePiece.setName(container.i18n.getT(Locale.EnglishUS)(key));
+    interactivePiece.setNameLocalizations(
+        Object.keys(Languages).reduce<LocalizationMap>((carry, language) => {
+            if (!i18next.exists(key, { lng: language })) {
+                return carry;
+            }
+
+            carry[language as Locale] = container.i18n.getT(language)(key);
+
+            return carry;
+        }, {}),
+    );
+
+    return interactivePiece;
+};
+
+// For names that cannot be derived from the piece itself: commandName is the i18n slug, not the displayed name.
+export const registerCommandNames = <T extends NameLocalizable>(command: T, commandName: string): T => {
+    return setNames(command, `commands:${commandName.toLowerCase()}.definition.name`);
+};
+
+export const registerOptionNames = <T extends NameLocalizable>(
+    commandName: string,
+    option: T,
+    context: OptionDescriptionContext = {},
+): T => {
+    if (!option.name) {
+        throw new Error('You have to name the option before trying to register its localized names.');
+    }
+
+    return setNames(option, buildOptionKey(commandName, option.name.toLowerCase(), context, 'name'));
+};
+
 export const registerCommandDescriptions = (
-    command: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder
+    command: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder,
 ): typeof command => {
     if (!command.name) {
         throw new Error('You have to name the command before trying to register its descriptions.');
@@ -70,7 +112,7 @@ export const registerCommandDescriptions = (
 
     return setDescriptions(
         command,
-        `commands:${command.name.toLowerCase()}.definition.description`
+        `commands:${command.name.toLowerCase()}.definition.description`,
     ) as typeof command;
 };
 
@@ -122,7 +164,7 @@ export function registerOptionDescriptions(
 export function registerOptionDescriptions(
     commandName: string,
     option: ApplicationCommandOptionBase,
-    context: OptionDescriptionContext = {}
+    context: OptionDescriptionContext = {},
 ): typeof option {
     if (!option.name) {
         throw new Error('You have to name the option before trying to register its descriptions.');
@@ -130,33 +172,34 @@ export function registerOptionDescriptions(
 
     return setDescriptions(
         option,
-        buildOptionKey(commandName, option.name.toLowerCase(), context)
+        buildOptionKey(commandName, option.name.toLowerCase(), context),
     ) as typeof option;
 }
 
 function buildOptionKey(
     commandName: string,
     optionName: string,
-    { subcommand, subcommandGroup }: OptionDescriptionContext
+    { subcommand, subcommandGroup }: OptionDescriptionContext,
+    property: LocalizedProperty = 'description',
 ): string {
     const base = `commands:${commandName}.definition`;
 
     if (subcommandGroup && subcommand) {
         return `${base}.subcommandGroup.${subcommandGroup.toLowerCase()}`
-            + `.subcommand.${subcommand.toLowerCase()}.options.${optionName}.description`;
+            + `.subcommand.${subcommand.toLowerCase()}.options.${optionName}.${property}`;
     }
 
     if (subcommand) {
-        return `${base}.subcommand.${subcommand.toLowerCase()}.options.${optionName}.description`;
+        return `${base}.subcommand.${subcommand.toLowerCase()}.options.${optionName}.${property}`;
     }
 
-    return `${base}.options.${optionName}.description`;
+    return `${base}.options.${optionName}.${property}`;
 }
 
 export const registerSubcommandDescriptions = (
     commandName: string,
     subcommand: SlashCommandSubcommandBuilder,
-    subcommandGroup?: string
+    subcommandGroup?: string,
 ): typeof subcommand => {
     if (!subcommand.name) {
         throw new Error('You have to name the subcommand before trying to register its descriptions.');
@@ -173,7 +216,7 @@ export const registerSubcommandDescriptions = (
 
 export const registerSubcommandGroupDescriptions = (
     commandName: string,
-    group: SlashCommandSubcommandGroupBuilder
+    group: SlashCommandSubcommandGroupBuilder,
 ): typeof group => {
     if (!group.name) {
         throw new Error('You have to name the subcommand group before trying to register its descriptions.');
@@ -181,6 +224,6 @@ export const registerSubcommandGroupDescriptions = (
 
     return setDescriptions(
         group,
-        `commands:${commandName}.definition.subcommandGroup.${group.name.toLowerCase()}.description`
+        `commands:${commandName}.definition.subcommandGroup.${group.name.toLowerCase()}.description`,
     ) as typeof group;
 };

@@ -6,7 +6,7 @@ import {
     LanguageEmoji,
     Languages,
     registerCommandDescriptions,
-    registerOptionDescriptions
+    registerOptionDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
 import { Command } from '../../lib/Command.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
@@ -42,9 +42,9 @@ export default class extends Command {
                         name: Languages[locale as Locale]!,
                         value: locale,
                     })))
-                    .setRequired(true)
-                ))
-            )
+                    .setRequired(true),
+                )),
+            ),
         );
     }
 }

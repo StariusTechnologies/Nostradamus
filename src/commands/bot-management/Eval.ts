@@ -2,7 +2,7 @@ import process from 'node:process';
 import {
     type ChatInputCommandInteraction,
     ContainerBuilder,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { MessageFlags } from 'discord-api-types/v10';
 import { ApplicationCommandRegistry, container } from '@sapphire/framework';
@@ -55,11 +55,11 @@ export default class extends LocalizedCommand {
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(`## ${title}`),
                 new TextDisplayBuilder().setContent(
-                    `**${t('commands:eval.embed.codeFieldName')}**\n\`\`\`js\n${code}\n\`\`\``
+                    `**${t('commands:eval.embed.codeFieldName')}**\n\`\`\`js\n${code}\n\`\`\``,
                 ),
                 new TextDisplayBuilder().setContent(
-                    `**${t('commands:eval.embed.resultFieldName')}**\n\`\`\`\n${output}\n\`\`\``
-                )
+                    `**${t('commands:eval.embed.resultFieldName')}**\n\`\`\`\n${output}\n\`\`\``,
+                ),
             );
 
         await interactionManager.reply({
@@ -76,14 +76,14 @@ export default class extends LocalizedCommand {
                     .setDefaultMemberPermissions(0)
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName('code')
-                        .setRequired(true)
-                    ))
+                        .setRequired(true),
+                    )),
                 ),
             {
                 guildIds: [
                     '428002317833469963',
                 ],
-            }
+            },
         );
     }
 }

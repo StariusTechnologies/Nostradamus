@@ -3,7 +3,7 @@ import { Events } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener, type ListenerOptions } from '@sapphire/framework';
 import { loadEmojis } from '../util/Emojis.js';
-import { getSetting, SettingKey } from '../lib/Settings.js';
+import { getSetting, SettingKey, warmSettingsCache } from '../lib/SettingsService.js';
 import { WatchService } from '../lib/WatchService.js';
 import { InviteCache } from '../lib/InviteCache.js';
 import { DAY, HOUR } from '../util/DateTime.js';
@@ -26,6 +26,7 @@ export default class extends Listener {
         this.container.logger.info(`Serving in ${nbGuilds} guild${nbGuilds > 1 ? 's' : ''}`);
 
         await this.warmMemberCaches(client);
+        await warmSettingsCache();
         await WatchService.init();
         await InviteCache.init();
         await this.sweepStaleTrackedMessages();
@@ -61,7 +62,7 @@ export default class extends Listener {
 
             if (result.count > 0) {
                 this.container.logger.info(
-                    `Pruned ${result.count} tracked message(s) older than ${TRACKED_MESSAGE_TTL / DAY} days.`
+                    `Pruned ${result.count} tracked message(s) older than ${TRACKED_MESSAGE_TTL / DAY} days.`,
                 );
             }
         } catch (err) {
@@ -92,7 +93,7 @@ export default class extends Listener {
 
         if (!channel) {
             this.container.logger.warn(
-                `Auto-cleanup channel ${channelId} not found in guild ${guild.id}.`
+                `Auto-cleanup channel ${channelId} not found in guild ${guild.id}.`,
             );
 
             return;
@@ -106,7 +107,7 @@ export default class extends Listener {
 
         if (!cleanableTypes.includes(channel.type)) {
             this.container.logger.warn(
-                `Auto-cleanup channel ${channelId} in guild ${guild.id} is not text-based.`
+                `Auto-cleanup channel ${channelId} in guild ${guild.id} is not text-based.`,
             );
 
             return;
@@ -116,7 +117,7 @@ export default class extends Listener {
             await (channel as GuildTextBasedChannel).bulkDelete(100, true);
         } catch (err) {
             this.container.logger.warn(
-                `Failed to sweep auto-cleanup channel ${channelId} in guild ${guild.id}: ${err}`
+                `Failed to sweep auto-cleanup channel ${channelId} in guild ${guild.id}: ${err}`,
             );
         }
     }

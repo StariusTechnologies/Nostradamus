@@ -2,7 +2,7 @@ import {
     type ChatInputCommandInteraction,
     type Guild,
     type GuildMember,
-    type Message
+    type Message,
 } from 'discord.js';
 import { MessageFlags } from 'discord.js';
 import { InteractionContextType } from 'discord-api-types/v10';
@@ -10,18 +10,18 @@ import {
     type ApplicationCommandRegistry,
     type Args,
     Command as SapphireCommand,
-    container as sapphireContainer
+    container as sapphireContainer,
 } from '@sapphire/framework';
 import { fetchT } from '@sapphire/plugin-i18next';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import {
     registerCommandDescriptions,
-    registerOptionDescriptions
+    registerOptionDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
 import { Emojis } from '../../util/Emojis.js';
-import { DEFAULT_PRIMARY_LOCALE, getSetting, SettingKey } from '../../lib/Settings.js';
+import { DEFAULT_PRIMARY_LOCALE, getSetting, SettingKey } from '../../lib/SettingsService.js';
 import { parseUserToken } from '../../util/Discord.js';
 import { type TFunction } from 'i18next';
 
@@ -48,7 +48,7 @@ export default class extends LocalizedCommand {
 
         if (!member) {
             await interactionManager.edit(Components.error(
-                t('commands:prevent-suicide.error.notFound', { emoji: '❌' })
+                t('commands:prevent-suicide.error.notFound', { emoji: '❌' }),
             ));
 
             return;
@@ -58,7 +58,7 @@ export default class extends LocalizedCommand {
 
         if (!sent) {
             await interactionManager.edit(Components.error(
-                t('commands:prevent-suicide.error.dmFailed', { emoji: '❌' })
+                t('commands:prevent-suicide.error.dmFailed', { emoji: '❌' }),
             ));
 
             return;
@@ -68,7 +68,7 @@ export default class extends LocalizedCommand {
             t('commands:prevent-suicide.confirm', {
                 emoji: Emojis.RainbowSheep,
                 user: `<@${member.id}>`,
-            })
+            }),
         ));
     }
 
@@ -82,7 +82,7 @@ export default class extends LocalizedCommand {
 
         if (!member) {
             await message.reply(Components.error(
-                t('commands:prevent-suicide.error.notFound', { emoji: '❌' })
+                t('commands:prevent-suicide.error.notFound', { emoji: '❌' }),
             )).catch(() => null);
 
             return;
@@ -97,7 +97,7 @@ export default class extends LocalizedCommand {
         }
 
         await message.reply(Components.error(
-            t('commands:prevent-suicide.error.dmFailed', { emoji: '❌' })
+            t('commands:prevent-suicide.error.dmFailed', { emoji: '❌' }),
         )).catch(() => null);
     }
 
@@ -120,9 +120,9 @@ export default class extends LocalizedCommand {
                 .setContexts(InteractionContextType.Guild)
                 .addUserOption(option => registerOptionDescriptions(this.name, option
                     .setName('user')
-                    .setRequired(true)
-                ))
-            )
+                    .setRequired(true),
+                )),
+            ),
         );
     }
 
@@ -152,7 +152,7 @@ export default class extends LocalizedCommand {
         const locales = await this.resolveLocalesForMember(guild, member);
         const parts = locales.map(locale => sapphireContainer.i18n.getT(locale)(
             'commands:prevent-suicide.dm',
-            { user: `<@${member.id}>`, guildName: guild.name }
+            { user: `<@${member.id}>`, guildName: guild.name },
         ));
         const body = parts.join('\n\n');
 

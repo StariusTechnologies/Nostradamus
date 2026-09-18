@@ -29,9 +29,9 @@ export class Bootstrap {
         }
 
         if (dotEnvPath) {
-            configureEnvironment({ path: dotEnvPath });
+            configureEnvironment({ path: dotEnvPath, quiet: true });
         } else {
-            configureEnvironment();
+            configureEnvironment({ quiet: true });
         }
 
         Bootstrap.instance = this;
@@ -42,7 +42,7 @@ export class Bootstrap {
             IntentsBitField.Flags.Guilds,
             IntentsBitField.Flags.GuildMembers,
             IntentsBitField.Flags.GuildModeration,
-            IntentsBitField.Flags.GuildEmojisAndStickers,
+            IntentsBitField.Flags.GuildExpressions,
             IntentsBitField.Flags.GuildIntegrations,
             IntentsBitField.Flags.GuildInvites,
             IntentsBitField.Flags.GuildVoiceStates,
@@ -191,8 +191,8 @@ export class Bootstrap {
 
                         container.logger.debug(
                             `${cyanBright('prisma:query')} ${bold(
-                                `${model}.${operation}(${stringifiedArgs}${bold(')')}`
-                            )} took ${bold(`${green(time.toFixed(4))}ms`)}`
+                                `${model}.${operation}(${stringifiedArgs}${bold(')')}`,
+                            )} took ${bold(`${green(time.toFixed(4))}ms`)}`,
                         );
                     } else {
                         // Most likely in $executeRaw/queryRaw

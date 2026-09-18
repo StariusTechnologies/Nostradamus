@@ -25,7 +25,7 @@ export default class extends LocalizedCommand {
         if (existingRole) {
             await interactionManager.edit(Components.error(t(
                 'commands:addlanguage.error.alreadyExists',
-                { emoji: '❌', role: `<@&${existingRole.id}>` }
+                { emoji: '❌', role: `<@&${existingRole.id}>` },
             )));
 
             return;
@@ -33,7 +33,7 @@ export default class extends LocalizedCommand {
 
         if (guild.roles.cache.size > 249) {
             await interactionManager.edit(Components.error(
-                t('commands:addlanguage.error.noSlotLeft', { emoji: '❌' })
+                t('commands:addlanguage.error.noSlotLeft', { emoji: '❌' }),
             ));
 
             return;
@@ -47,12 +47,12 @@ export default class extends LocalizedCommand {
             error(
                 guild.id,
                 `Could not create language role ${frenchName}: ${err}`,
-                this.logFooter
+                this.logFooter,
             );
 
             this.container.logger.error(err);
             await interactionManager.edit(Components.error(
-                t('commands:addlanguage.error.couldNotCreateRole', { emoji: '❌' })
+                t('commands:addlanguage.error.couldNotCreateRole', { emoji: '❌' }),
             ));
 
             return;
@@ -82,13 +82,13 @@ export default class extends LocalizedCommand {
                 .setContexts(InteractionContextType.Guild)
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('english-name')
-                    .setRequired(true)
+                    .setRequired(true),
                 ))
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('french-name')
-                    .setRequired(true)
-                ))
-            )
+                    .setRequired(true),
+                )),
+            ),
         );
     }
 }

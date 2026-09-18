@@ -3,7 +3,7 @@ import {
     ContainerBuilder,
     type Role,
     SeparatorBuilder,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { InteractionContextType, MessageFlags } from 'discord-api-types/v10';
 import { type ApplicationCommandRegistry } from '@sapphire/framework';
@@ -15,7 +15,7 @@ import {
     registerCommandDescriptions,
     registerOptionDescriptions,
     registerSubcommandDescriptions,
-    registerSubcommandGroupDescriptions
+    registerSubcommandGroupDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
@@ -119,7 +119,7 @@ export default class extends LocalizedSubcommand {
             t('commands:audit.subcommand.ignoredRole.add.confirm', {
                 emoji: Emojis.RainbowSheep,
                 roleName: role.name,
-            })
+            }),
         ));
     }
 
@@ -140,7 +140,7 @@ export default class extends LocalizedSubcommand {
                 t('commands:audit.subcommand.ignoredRole.remove.notConfigured', {
                     emoji: '❌',
                     roleName: role.name,
-                })
+                }),
             ));
 
             return;
@@ -154,7 +154,7 @@ export default class extends LocalizedSubcommand {
             t('commands:audit.subcommand.ignoredRole.remove.confirm', {
                 emoji: Emojis.RainbowSheep,
                 roleName: role.name,
-            })
+            }),
         ));
     }
 
@@ -192,7 +192,7 @@ export default class extends LocalizedSubcommand {
                 .setDefaultMemberPermissions(0)
                 .setContexts(InteractionContextType.Guild)
                 .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
-                    .setName('run')
+                    .setName('run'),
                 ))
                 .addSubcommandGroup(group => registerSubcommandGroupDescriptions(this.name, group
                     .setName(IGNORED_ROLE_GROUP)
@@ -200,21 +200,21 @@ export default class extends LocalizedSubcommand {
                         .setName('add')
                         .addRoleOption(option => registerOptionDescriptions(this.name, option
                             .setName('role')
-                            .setRequired(true), { subcommandGroup: IGNORED_ROLE_GROUP, subcommand: 'add' }
-                        )), IGNORED_ROLE_GROUP
+                            .setRequired(true), { subcommandGroup: IGNORED_ROLE_GROUP, subcommand: 'add' },
+                        )), IGNORED_ROLE_GROUP,
                     ))
                     .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
                         .setName('remove')
                         .addRoleOption(option => registerOptionDescriptions(this.name, option
                             .setName('role')
-                            .setRequired(true), { subcommandGroup: IGNORED_ROLE_GROUP, subcommand: 'remove' }
-                        )), IGNORED_ROLE_GROUP
+                            .setRequired(true), { subcommandGroup: IGNORED_ROLE_GROUP, subcommand: 'remove' },
+                        )), IGNORED_ROLE_GROUP,
                     ))
                     .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
-                        .setName('list'), IGNORED_ROLE_GROUP
-                    ))
-                ))
-            )
+                        .setName('list'), IGNORED_ROLE_GROUP,
+                    )),
+                )),
+            ),
         );
     }
 
@@ -227,7 +227,7 @@ export default class extends LocalizedSubcommand {
             brokenLanguages: BrokenEntry[],
             brokenCountries: BrokenEntry[],
             untrackedRoles: Role[],
-        }
+        },
     ): ContainerBuilder {
         const heading = t('commands:audit.subcommand.run.heading', { emoji: Emojis.RainbowSheep });
         const counts = t('commands:audit.subcommand.run.counts', {
@@ -238,12 +238,12 @@ export default class extends LocalizedSubcommand {
         const brokenLanguagesSection = this.formatBrokenSection(
             t,
             'commands:audit.subcommand.run.brokenLanguages',
-            data.brokenLanguages
+            data.brokenLanguages,
         );
         const brokenCountriesSection = this.formatBrokenSection(
             t,
             'commands:audit.subcommand.run.brokenCountries',
-            data.brokenCountries
+            data.brokenCountries,
         );
         const untrackedRolesSection = this.formatUntrackedSection(t, data.untrackedRoles);
         const container = new ContainerBuilder()

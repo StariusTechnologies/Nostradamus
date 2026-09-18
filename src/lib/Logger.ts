@@ -1,7 +1,7 @@
 import { ContainerBuilder, TextDisplayBuilder, type TextChannel } from 'discord.js';
 import { MessageFlags } from 'discord-api-types/v10';
 import { container } from '@sapphire/framework';
-import { getSetting, SettingKey } from './Settings.js';
+import { getSetting, SettingKey } from './SettingsService.js';
 import { Colors } from '../util/Colors.js';
 
 export async function log(guildId: string, message: string, footer?: string, colour?: number): Promise<void> {
@@ -20,7 +20,7 @@ export async function log(guildId: string, message: string, footer?: string, col
         .setAccentColor(colour ?? Colors.LogDefault)
         .addTextDisplayComponents(
             new TextDisplayBuilder().setContent('## Log'),
-            new TextDisplayBuilder().setContent(body)
+            new TextDisplayBuilder().setContent(body),
         );
 
     await (logChannel as TextChannel).send({

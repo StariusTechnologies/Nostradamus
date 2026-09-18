@@ -2,19 +2,19 @@ import {
     type ChatInputCommandInteraction,
     type Message,
     PermissionsBitField,
-    type Role
+    type Role,
 } from 'discord.js';
 import { InteractionContextType, MessageFlags } from 'discord-api-types/v10';
 import {
     type ApplicationCommandRegistry,
     type Args,
-    Command as SapphireCommand
+    Command as SapphireCommand,
 } from '@sapphire/framework';
 import { fetchT } from '@sapphire/plugin-i18next';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import {
     registerCommandDescriptions,
-    registerOptionDescriptions
+    registerOptionDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
@@ -55,7 +55,7 @@ export default class extends LocalizedCommand {
         await interactionManager.edit(Components.confirm(
             t(enable ? 'commands:panic.confirm.enabled' : 'commands:panic.confirm.disabled', {
                 emoji: Emojis.RainbowSheep,
-            })
+            }),
         ));
     }
 
@@ -82,22 +82,22 @@ export default class extends LocalizedCommand {
                     .setRequired(true)
                     .addChoices(
                         { name: 'on', value: 'on' },
-                        { name: 'off', value: 'off' }
-                    )
-                ))
-            )
+                        { name: 'off', value: 'off' },
+                    ),
+                )),
+            ),
         );
     }
 
     private async applyPanic(
         guild: import('discord.js').Guild,
         enable: boolean,
-        invokerUsername: string
+        invokerUsername: string,
     ): Promise<void> {
         notice(
             guild.id,
             `${enable ? 'Entering' : 'Leaving'} server panic mode (called by ${invokerUsername})`,
-            this.logFooter
+            this.logFooter,
         );
 
         const { everyone } = guild.roles;
@@ -117,7 +117,7 @@ export default class extends LocalizedCommand {
         notice(
             guild.id,
             `${enable ? 'Entered' : 'Left'} server panic mode`,
-            this.logFooter
+            this.logFooter,
         );
     }
 

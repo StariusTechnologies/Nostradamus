@@ -1,7 +1,7 @@
 import type { Message } from 'discord.js';
 import { Events, Listener, type ListenerOptions } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
-import { getSetting, SettingKey } from '../lib/Settings.js';
+import { getSetting, SettingKey } from '../lib/SettingsService.js';
 import { MINUTE } from '../util/DateTime.js';
 
 const CLEANUP_DELAY = MINUTE;

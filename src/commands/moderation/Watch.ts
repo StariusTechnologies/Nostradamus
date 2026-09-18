@@ -9,7 +9,7 @@ import {
     type MessageActionRowComponentBuilder,
     SeparatorBuilder,
     TextDisplayBuilder,
-    type User
+    type User,
 } from 'discord.js';
 import { InteractionContextType, MessageFlags } from 'discord-api-types/v10';
 import { type ApplicationCommandRegistry } from '@sapphire/framework';
@@ -21,7 +21,7 @@ import { LocalizedSubcommand } from '../../lib/i18n/LocalizedSubcommand.js';
 import {
     registerCommandDescriptions,
     registerOptionDescriptions,
-    registerSubcommandDescriptions
+    registerSubcommandDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
@@ -71,7 +71,7 @@ export default class extends LocalizedSubcommand {
 
         if (resolved.kind === 'invalid') {
             await interactionManager.edit(Components.error(
-                t('commands:watch.error.invalidDuration', { emoji: '❌' })
+                t('commands:watch.error.invalidDuration', { emoji: '❌' }),
             ));
 
             return;
@@ -85,7 +85,7 @@ export default class extends LocalizedSubcommand {
                     emoji: '🤔',
                     user: `<@${user.id}>`,
                     reason: this.truncate(existing.reason, REASON_DISPLAY_LIMIT),
-                })
+                }),
             ));
 
             return;
@@ -96,7 +96,7 @@ export default class extends LocalizedSubcommand {
         await WatchService.add(guild.id, user.id, reason, durationMs);
 
         await interactionManager.edit(Components.confirm(
-            this.buildConfirmMessage(t, 'add', user.id, resolved)
+            this.buildConfirmMessage(t, 'add', user.id, resolved),
         ));
     }
 
@@ -114,7 +114,7 @@ export default class extends LocalizedSubcommand {
                 t('commands:watch.subcommand.remove.notWatched', {
                     emoji: '❌',
                     user: `<@${user.id}>`,
-                })
+                }),
             ));
 
             return;
@@ -126,7 +126,7 @@ export default class extends LocalizedSubcommand {
             t('commands:watch.subcommand.remove.confirm', {
                 emoji: Emojis.RainbowSheep,
                 user: `<@${user.id}>`,
-            })
+            }),
         ));
     }
 
@@ -144,7 +144,7 @@ export default class extends LocalizedSubcommand {
 
         if (resolved.kind === 'invalid') {
             await interactionManager.edit(Components.error(
-                t('commands:watch.error.invalidDuration', { emoji: '❌' })
+                t('commands:watch.error.invalidDuration', { emoji: '❌' }),
             ));
 
             return;
@@ -155,7 +155,7 @@ export default class extends LocalizedSubcommand {
                 t('commands:watch.subcommand.edit.notWatched', {
                     emoji: '❌',
                     user: `<@${user.id}>`,
-                })
+                }),
             ));
 
             return;
@@ -166,7 +166,7 @@ export default class extends LocalizedSubcommand {
         await WatchService.edit(guild.id, user.id, reason, durationMs);
 
         await interactionManager.edit(Components.confirm(
-            this.buildConfirmMessage(t, 'edit', user.id, resolved)
+            this.buildConfirmMessage(t, 'edit', user.id, resolved),
         ));
     }
 
@@ -185,7 +185,7 @@ export default class extends LocalizedSubcommand {
                 t('commands:watch.subcommand.info.notWatched', {
                     emoji: '❌',
                     user: `<@${user.id}>`,
-                })
+                }),
             ));
 
             return;
@@ -268,50 +268,50 @@ export default class extends LocalizedSubcommand {
                     .setName('add')
                     .addUserOption(option => registerOptionDescriptions(this.name, option
                         .setName('user')
-                        .setRequired(true), { subcommand: 'add' }
+                        .setRequired(true), { subcommand: 'add' },
                     ))
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName('reason')
-                        .setRequired(true), { subcommand: 'add' }
+                        .setRequired(true), { subcommand: 'add' },
                     ))
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName('duration')
-                        .setRequired(false), { subcommand: 'add' }
-                    ))
+                        .setRequired(false), { subcommand: 'add' },
+                    )),
                 ))
                 .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
                     .setName('remove')
                     .addUserOption(option => registerOptionDescriptions(this.name, option
                         .setName('user')
-                        .setRequired(true), { subcommand: 'remove' }
-                    ))
+                        .setRequired(true), { subcommand: 'remove' },
+                    )),
                 ))
                 .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
                     .setName('edit')
                     .addUserOption(option => registerOptionDescriptions(this.name, option
                         .setName('user')
-                        .setRequired(true), { subcommand: 'edit' }
+                        .setRequired(true), { subcommand: 'edit' },
                     ))
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName('reason')
-                        .setRequired(true), { subcommand: 'edit' }
+                        .setRequired(true), { subcommand: 'edit' },
                     ))
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName('duration')
-                        .setRequired(false), { subcommand: 'edit' }
-                    ))
+                        .setRequired(false), { subcommand: 'edit' },
+                    )),
                 ))
                 .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
                     .setName('info')
                     .addUserOption(option => registerOptionDescriptions(this.name, option
                         .setName('user')
-                        .setRequired(true), { subcommand: 'info' }
-                    ))
+                        .setRequired(true), { subcommand: 'info' },
+                    )),
                 ))
                 .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
-                    .setName('list')
-                ))
-            )
+                    .setName('list'),
+                )),
+            ),
         );
     }
 
@@ -343,7 +343,7 @@ export default class extends LocalizedSubcommand {
         t: TFunction,
         subcommand: 'add' | 'edit',
         userId: string,
-        resolved: Exclude<ResolvedDuration, { kind: 'invalid' }>
+        resolved: Exclude<ResolvedDuration, { kind: 'invalid' }>,
     ): string {
         if (resolved.kind === 'permanent') {
             return t(`commands:watch.subcommand.${subcommand}.confirmPermanent`, {
@@ -389,7 +389,7 @@ export default class extends LocalizedSubcommand {
         rows: WatchedMember[],
         page: number,
         totalPages: number,
-        buttonsDisabled = false
+        buttonsDisabled = false,
     ): ContainerBuilder {
         const start = page * PAGE_SIZE;
         const slice = rows.slice(start, start + PAGE_SIZE);

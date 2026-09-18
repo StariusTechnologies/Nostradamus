@@ -146,3 +146,38 @@ model TrackedMessage {
     @@index([idGuild, createdAt])
     @@map("tracked_message")
 }
+
+model Snippet {
+    id            Int            @default(autoincrement())
+    idGuild       String
+    idUser        String
+    content       String         @db.Text
+    attachmentUrl String?
+    createdAt     DateTime
+    canRead       Json
+    canEdit       Json
+    aliases       SnippetAlias[]
+
+    @@id(id)
+    @@unique([id, idGuild])
+    @@map("snippet")
+}
+
+enum SnippetAliasPrimary {
+    PRIMARY
+}
+
+model SnippetAlias {
+    id        Int                  @default(autoincrement())
+    idSnippet Int
+    idGuild   String
+    alias     String
+    isPrimary SnippetAliasPrimary?
+
+    snippet Snippet @relation(fields: [idSnippet, idGuild], references: [id, idGuild], onDelete: Cascade)
+
+    @@id(id)
+    @@unique([idGuild, alias])
+    @@unique([idSnippet, isPrimary])
+    @@map("snippet_alias")
+}

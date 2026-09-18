@@ -15,7 +15,7 @@ export default class extends LocalizedCommand {
         const latency = responseTimestamp - interaction.createdTimestamp;
 
         await interactionManager.edit(t('commands:ping.response', { latency })).catch(
-            error => this.container.logger.error(error)
+            error => this.container.logger.error(error),
         );
     }
 
@@ -23,8 +23,8 @@ export default class extends LocalizedCommand {
         registry.registerChatInputCommand(command =>
             registerCommandDescriptions(command
                 .setName(this.name)
-                .setDefaultMemberPermissions(0)
-            )
+                .setDefaultMemberPermissions(0),
+            ),
         );
     }
 }

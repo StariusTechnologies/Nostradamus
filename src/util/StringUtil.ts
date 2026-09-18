@@ -5,7 +5,7 @@ export default class StringUtil {
 
     public static kebabSnakeToCamel(string: string): string {
         return string.toLowerCase().replace(/([_-][a-z])/gu, group =>
-            group.toUpperCase().replace('-', '').replace('_', '')
+            group.toUpperCase().replace('-', '').replace('_', ''),
         );
     }
 }

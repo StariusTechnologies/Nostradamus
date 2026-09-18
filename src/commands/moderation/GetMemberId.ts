@@ -6,7 +6,7 @@ import {
     type GuildMember,
     type Message,
     SeparatorBuilder,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { MessageFlags } from 'discord.js';
 import { InteractionContextType } from 'discord-api-types/v10';
@@ -14,20 +14,20 @@ import {
     type ApplicationCommandRegistry,
     type Args,
     Command as SapphireCommand,
-    container as sapphireContainer
+    container as sapphireContainer,
 } from '@sapphire/framework';
 import { fetchT } from '@sapphire/plugin-i18next';
 import { type TFunction } from 'i18next';
 import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import {
     registerCommandDescriptions,
-    registerOptionDescriptions
+    registerOptionDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
 import { Emojis } from '../../util/Emojis.js';
 import { Colors } from '../../util/Colors.js';
-import { DEFAULT_PRIMARY_LOCALE, getSetting, SettingKey } from '../../lib/Settings.js';
+import { DEFAULT_PRIMARY_LOCALE, getSetting, SettingKey } from '../../lib/SettingsService.js';
 import { parseUserToken } from '../../util/Discord.js';
 
 const COMMAND_NAME = 'get-member-id';
@@ -54,7 +54,7 @@ export default class extends LocalizedCommand {
 
         if (query.length === 0) {
             await interactionManager.edit(Components.error(
-                t('commands:get-member-id.error.emptyQuery', { emoji: '❌' })
+                t('commands:get-member-id.error.emptyQuery', { emoji: '❌' }),
             ));
 
             return;
@@ -64,7 +64,7 @@ export default class extends LocalizedCommand {
 
         if (matches.length === 0) {
             await interactionManager.edit(Components.info(
-                t('commands:get-member-id.empty', { emoji: '🤷' })
+                t('commands:get-member-id.empty', { emoji: '🤷' }),
             ));
 
             return;
@@ -130,9 +130,9 @@ export default class extends LocalizedCommand {
                 .setContexts(InteractionContextType.Guild)
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('query')
-                    .setRequired(true)
-                ))
-            )
+                    .setRequired(true),
+                )),
+            ),
         );
     }
 

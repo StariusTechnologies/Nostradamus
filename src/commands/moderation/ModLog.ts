@@ -7,7 +7,7 @@ import { LocalizedSubcommand } from '../../lib/i18n/LocalizedSubcommand.js';
 import {
     registerCommandDescriptions,
     registerOptionDescriptions,
-    registerSubcommandDescriptions
+    registerSubcommandDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
@@ -19,7 +19,7 @@ import {
     ModerationLogPostError,
     post,
     removeAvatar,
-    type ModerationAction
+    type ModerationAction,
 } from '../../lib/ModerationLog.js';
 
 const COMMAND_NAME = 'mod-log';
@@ -50,7 +50,7 @@ export default class extends LocalizedSubcommand {
 
         if (!ACTIONS.includes(action)) {
             await interactionManager.edit(Components.error(
-                t('commands:mod-log.error.invalidAction', { emoji: '❌' })
+                t('commands:mod-log.error.invalidAction', { emoji: '❌' }),
             ));
 
             return;
@@ -61,7 +61,7 @@ export default class extends LocalizedSubcommand {
 
             if (!message) {
                 await interactionManager.edit(Components.error(
-                    t('commands:mod-log.error.noChannel', { emoji: '❌' })
+                    t('commands:mod-log.error.noChannel', { emoji: '❌' }),
                 ));
 
                 return;
@@ -71,12 +71,12 @@ export default class extends LocalizedSubcommand {
                 t('commands:mod-log.subcommand.post.confirm', {
                     emoji: Emojis.RainbowSheep,
                     messageId: message.id,
-                })
+                }),
             ));
         } catch (err) {
             if (err instanceof ModerationLogPostError) {
                 await interactionManager.edit(Components.error(
-                    t('commands:mod-log.error.noChannel', { emoji: '❌' })
+                    t('commands:mod-log.error.noChannel', { emoji: '❌' }),
                 ));
 
                 return;
@@ -84,7 +84,7 @@ export default class extends LocalizedSubcommand {
 
             this.container.logger.warn(`/mod-log post failed: ${err}`);
             await interactionManager.edit(Components.error(
-                t('commands:mod-log.error.unknown', { emoji: '❌' })
+                t('commands:mod-log.error.unknown', { emoji: '❌' }),
             ));
         }
     }
@@ -105,12 +105,12 @@ export default class extends LocalizedSubcommand {
                 t('commands:mod-log.subcommand.edit.confirm', {
                     emoji: Emojis.RainbowSheep,
                     messageId,
-                })
+                }),
             ));
         } catch (err) {
             if (err instanceof ModerationLogPostError) {
                 await interactionManager.edit(Components.error(
-                    t('commands:mod-log.error.noChannel', { emoji: '❌' })
+                    t('commands:mod-log.error.noChannel', { emoji: '❌' }),
                 ));
 
                 return;
@@ -118,7 +118,7 @@ export default class extends LocalizedSubcommand {
 
             if (err instanceof ModerationLogMessageNotFoundError) {
                 await interactionManager.edit(Components.error(
-                    t('commands:mod-log.error.messageNotFound', { emoji: '❌' })
+                    t('commands:mod-log.error.messageNotFound', { emoji: '❌' }),
                 ));
 
                 return;
@@ -126,7 +126,7 @@ export default class extends LocalizedSubcommand {
 
             if (err instanceof ModerationLogInvalidMessageError) {
                 await interactionManager.edit(Components.error(
-                    t('commands:mod-log.error.notAModLogEntry', { emoji: '❌' })
+                    t('commands:mod-log.error.notAModLogEntry', { emoji: '❌' }),
                 ));
 
                 return;
@@ -134,7 +134,7 @@ export default class extends LocalizedSubcommand {
 
             this.container.logger.warn(`/mod-log edit failed: ${err}`);
             await interactionManager.edit(Components.error(
-                t('commands:mod-log.error.unknown', { emoji: '❌' })
+                t('commands:mod-log.error.unknown', { emoji: '❌' }),
             ));
         }
     }
@@ -154,12 +154,12 @@ export default class extends LocalizedSubcommand {
                 t('commands:mod-log.subcommand.remove-avatar.confirm', {
                     emoji: Emojis.RainbowSheep,
                     messageId,
-                })
+                }),
             ));
         } catch (err) {
             if (err instanceof ModerationLogPostError) {
                 await interactionManager.edit(Components.error(
-                    t('commands:mod-log.error.noChannel', { emoji: '❌' })
+                    t('commands:mod-log.error.noChannel', { emoji: '❌' }),
                 ));
 
                 return;
@@ -167,7 +167,7 @@ export default class extends LocalizedSubcommand {
 
             if (err instanceof ModerationLogMessageNotFoundError) {
                 await interactionManager.edit(Components.error(
-                    t('commands:mod-log.error.messageNotFound', { emoji: '❌' })
+                    t('commands:mod-log.error.messageNotFound', { emoji: '❌' }),
                 ));
 
                 return;
@@ -175,7 +175,7 @@ export default class extends LocalizedSubcommand {
 
             if (err instanceof ModerationLogInvalidMessageError) {
                 await interactionManager.edit(Components.error(
-                    t('commands:mod-log.error.notAModLogEntry', { emoji: '❌' })
+                    t('commands:mod-log.error.notAModLogEntry', { emoji: '❌' }),
                 ));
 
                 return;
@@ -183,7 +183,7 @@ export default class extends LocalizedSubcommand {
 
             this.container.logger.warn(`/mod-log remove-avatar failed: ${err}`);
             await interactionManager.edit(Components.error(
-                t('commands:mod-log.error.unknown', { emoji: '❌' })
+                t('commands:mod-log.error.unknown', { emoji: '❌' }),
             ));
         }
     }
@@ -198,7 +198,7 @@ export default class extends LocalizedSubcommand {
                     .setName('post')
                     .addUserOption(option => registerOptionDescriptions(this.name, option
                         .setName('user')
-                        .setRequired(true), { subcommand: 'post' }
+                        .setRequired(true), { subcommand: 'post' },
                     ))
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName('action')
@@ -206,33 +206,33 @@ export default class extends LocalizedSubcommand {
                         .addChoices(
                             { name: 'ban', value: 'ban' },
                             { name: 'kick', value: 'kick' },
-                            { name: 'unban', value: 'unban' }
-                        ), { subcommand: 'post' }
+                            { name: 'unban', value: 'unban' },
+                        ), { subcommand: 'post' },
                     ))
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName('reason')
-                        .setRequired(true), { subcommand: 'post' }
-                    ))
+                        .setRequired(true), { subcommand: 'post' },
+                    )),
                 ))
                 .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
                     .setName('edit')
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName('message-id')
-                        .setRequired(true), { subcommand: 'edit' }
+                        .setRequired(true), { subcommand: 'edit' },
                     ))
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName('reason')
-                        .setRequired(true), { subcommand: 'edit' }
-                    ))
+                        .setRequired(true), { subcommand: 'edit' },
+                    )),
                 ))
                 .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
                     .setName('remove-avatar')
                     .addStringOption(option => registerOptionDescriptions(this.name, option
                         .setName('message-id')
-                        .setRequired(true), { subcommand: 'remove-avatar' }
-                    ))
-                ))
-            )
+                        .setRequired(true), { subcommand: 'remove-avatar' },
+                    )),
+                )),
+            ),
         );
     }
 }

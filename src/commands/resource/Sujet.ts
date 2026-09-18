@@ -1,7 +1,7 @@
 import {
     type ChatInputCommandInteraction,
     ContainerBuilder,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { type ApplicationCommandRegistry } from '@sapphire/framework';
 import { InteractionContextType } from 'discord-api-types/v10';
@@ -37,9 +37,9 @@ export default class extends LocalizedCommand {
             .setAccentColor(Colors.Info)
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(
-                    `## ${t('commands:sujet.title', { emoji: Emojis.RainbowSheep })}`
+                    `## ${t('commands:sujet.title', { emoji: Emojis.RainbowSheep })}`,
                 ),
-                new TextDisplayBuilder().setContent(topic.text)
+                new TextDisplayBuilder().setContent(topic.text),
             );
 
         await interactionManager.edit({ components: [container] });
@@ -54,8 +54,8 @@ export default class extends LocalizedCommand {
         registry.registerChatInputCommand(command =>
             registerCommandDescriptions(command
                 .setName(this.name)
-                .setContexts(InteractionContextType.Guild)
-            )
+                .setContexts(InteractionContextType.Guild),
+            ),
         );
     }
 

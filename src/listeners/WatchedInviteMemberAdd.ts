@@ -6,14 +6,14 @@ import {
     type GuildMember,
     type MessageActionRowComponentBuilder,
     type TextChannel,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { MessageFlags } from 'discord-api-types/v10';
 import { Events, Listener, type ListenerOptions } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { InviteCache } from '../lib/InviteCache.js';
 import { WatchService } from '../lib/WatchService.js';
-import { getSetting, SettingKey } from '../lib/Settings.js';
+import { getSetting, SettingKey } from '../lib/SettingsService.js';
 import { Colors } from '../util/Colors.js';
 
 const WATCH_PERM_PREFIX = 'watch-invite-perm';
@@ -85,7 +85,7 @@ export default class extends Listener {
     private buildButtons(
         joinerId: string,
         inviterId: string,
-        code: string
+        code: string,
     ): ActionRowBuilder<MessageActionRowComponentBuilder> {
         const payload = `${joinerId}:${inviterId}:${code}`;
         const watchPerm = new ButtonBuilder()

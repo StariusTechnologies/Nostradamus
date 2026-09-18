@@ -23,7 +23,7 @@ export default class extends LocalizedCommand {
 
         if (!role) {
             await interactionManager.edit(Components.error(
-                t('commands:addlanguagealias.error.noRole', { emoji: '❌' })
+                t('commands:addlanguagealias.error.noRole', { emoji: '❌' }),
             ));
 
             return;
@@ -33,7 +33,7 @@ export default class extends LocalizedCommand {
 
         if (!languageEntry) {
             await interactionManager.edit(Components.error(
-                t('commands:addlanguagealias.error.noEntry', { emoji: '❌' })
+                t('commands:addlanguagealias.error.noEntry', { emoji: '❌' }),
             ));
 
             return;
@@ -44,7 +44,7 @@ export default class extends LocalizedCommand {
         });
 
         await interactionManager.edit(Components.confirm(
-            t('commands:addlanguagealias.confirm', { emoji: Emojis.RainbowSheep, role: `<@&${role.id}>` })
+            t('commands:addlanguagealias.confirm', { emoji: Emojis.RainbowSheep, role: `<@&${role.id}>` }),
         ));
     }
 
@@ -86,13 +86,13 @@ export default class extends LocalizedCommand {
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('language')
                     .setAutocomplete(true)
-                    .setRequired(true)
+                    .setRequired(true),
                 ))
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('alias')
-                    .setRequired(true)
-                ))
-            )
+                    .setRequired(true),
+                )),
+            ),
         );
     }
 }

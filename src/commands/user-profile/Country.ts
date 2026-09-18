@@ -24,7 +24,7 @@ export default class extends LocalizedCommand {
         if (!member) {
             error(guild.id, `Could not retrieve member ${interaction.user.id}`, this.logFooter);
             await interactionManager.edit(Components.error(
-                t('commands:country.error.noMember', { emoji: '❌' })
+                t('commands:country.error.noMember', { emoji: '❌' }),
             ));
 
             return;
@@ -34,7 +34,7 @@ export default class extends LocalizedCommand {
 
         if (!role) {
             await interactionManager.edit(Components.error(
-                t('commands:country.error.noRole', { emoji: '❌' })
+                t('commands:country.error.noRole', { emoji: '❌' }),
             ));
 
             return;
@@ -47,19 +47,19 @@ export default class extends LocalizedCommand {
                 error(
                     guild.id,
                     `Could not remove country role for ${member.id}: ${err}`,
-                    this.logFooter
+                    this.logFooter,
                 );
 
                 this.container.logger.error(err);
                 await interactionManager.edit(Components.error(
-                    t('commands:country.error.couldNotRemoveCountryRole', { emoji: '❌' })
+                    t('commands:country.error.couldNotRemoveCountryRole', { emoji: '❌' }),
                 ));
 
                 return;
             }
 
             await interactionManager.edit(Components.confirm(
-                t('commands:country.confirm.removed', { emoji: Emojis.RainbowSheep, roleName: role.name })
+                t('commands:country.confirm.removed', { emoji: Emojis.RainbowSheep, roleName: role.name }),
             ));
 
             return;
@@ -79,12 +79,12 @@ export default class extends LocalizedCommand {
                 error(
                     guild.id,
                     `Could not remove other country roles for ${member.id}: ${err}`,
-                    this.logFooter
+                    this.logFooter,
                 );
 
                 this.container.logger.error(err);
                 await interactionManager.edit(Components.error(
-                    t('commands:country.error.couldNotRemoveOtherCountryRoles', { emoji: '❌' })
+                    t('commands:country.error.couldNotRemoveOtherCountryRoles', { emoji: '❌' }),
                 ));
 
                 return;
@@ -97,19 +97,19 @@ export default class extends LocalizedCommand {
             error(
                 guild.id,
                 `Could not add country role for ${member.id}: ${err}`,
-                this.logFooter
+                this.logFooter,
             );
 
             this.container.logger.error(err);
             await interactionManager.edit(Components.error(
-                t('commands:country.error.couldNotAddRole', { emoji: '❌' })
+                t('commands:country.error.couldNotAddRole', { emoji: '❌' }),
             ));
 
             return;
         }
 
         await interactionManager.edit(Components.confirm(
-            t('commands:country.confirm.newRole', { emoji: Emojis.RainbowSheep, roleName: role.name })
+            t('commands:country.confirm.newRole', { emoji: Emojis.RainbowSheep, roleName: role.name }),
         ));
     }
 
@@ -150,9 +150,9 @@ export default class extends LocalizedCommand {
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('country')
                     .setAutocomplete(true)
-                    .setRequired(true)
-                ))
-            )
+                    .setRequired(true),
+                )),
+            ),
         );
     }
 }

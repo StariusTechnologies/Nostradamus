@@ -2,12 +2,12 @@ import {
     ContainerBuilder,
     type GuildMember,
     type TextChannel,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { MessageFlags } from 'discord-api-types/v10';
 import { container } from '@sapphire/framework';
 import type { WatchedMember } from '@prisma/client';
-import { getSetting, SettingKey } from './Settings.js';
+import { getSetting, SettingKey } from './SettingsService.js';
 import { Colors } from '../util/Colors.js';
 import { HOUR } from '../util/DateTime.js';
 
@@ -65,7 +65,7 @@ class WatchServiceImpl {
         idGuild: string,
         idUser: string,
         reason: string,
-        durationMs: number | null
+        durationMs: number | null,
     ): Promise<WatchedMember> {
         const now = new Date();
         const expiresAt = durationMs !== null ? new Date(now.getTime() + durationMs) : null;
@@ -88,7 +88,7 @@ class WatchServiceImpl {
         idGuild: string,
         idUser: string,
         reason: string,
-        durationMs: number | null
+        durationMs: number | null,
     ): Promise<WatchedMember> {
         const now = new Date();
         const expiresAt = durationMs !== null ? new Date(now.getTime() + durationMs) : null;

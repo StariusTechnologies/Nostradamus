@@ -582,5 +582,143 @@
                 "next": "Next →"
             }
         }
+    },
+    "snippet": {
+        "definition": {
+            "options": {
+                "name": {
+                    "name": "name",
+                    "description": "Send a snippet of text (also called a tag)"
+                }
+            },
+            "description": "Send a snippet of text (also called a tag)"
+        },
+        "invalidChannel": "{{emoji}} I cannot send a snippet in this channel.",
+        "success": "{{emoji}} Done! The snippet has been sent.",
+        "noSnippet": "{{emoji}} This snippet does not exist, or you are not allowed to use it."
+    },
+    "manage-snippets": {
+        "definition": {
+            "description": "Create, edit and delete snippets",
+            "subcommandGroup": {
+                "alias": {
+                    "description": "Manage a snippet's aliases",
+                    "subcommand": {
+                        "add": {
+                            "description": "Add an alias to a snippet",
+                            "options": {
+                                "snippet": { "description": "The snippet to add an alias to" },
+                                "name": { "description": "The new alias" },
+                                "primary": { "description": "Make this alias the snippet's primary one" }
+                            }
+                        },
+                        "edit": {
+                            "description": "Rename an alias or make it primary",
+                            "options": {
+                                "name": { "description": "The alias to update" },
+                                "new-name": { "description": "The new name for this alias" },
+                                "primary": { "description": "Make this alias the snippet's primary one" }
+                            }
+                        },
+                        "delete": {
+                            "description": "Delete an alias from a snippet",
+                            "options": {
+                                "name": { "description": "The alias to delete" }
+                            }
+                        }
+                    }
+                }
+            },
+            "subcommand": {
+                "add": {
+                    "description": "Add a snippet",
+                    "options": {
+                        "name": { "description": "The new snippet's name" }
+                    }
+                },
+                "edit": {
+                    "description": "Edit a snippet",
+                    "options": {
+                        "name": { "description": "The name of the snippet you want to edit" }
+                    }
+                },
+                "delete": {
+                    "description": "Delete a snippet",
+                    "options": {
+                        "name": { "description": "The name of the snippet you want to delete" }
+                    }
+                },
+                "restrict": {
+                    "description": "Restrict a snippet in terms of permissions",
+                    "options": {
+                        "name": { "description": "The name of the snippet you want to restrict" }
+                    }
+                }
+            }
+        },
+        "alias": {
+            "add": {
+                "wrongName": "{{emoji}} An alias can only contain lowercase letters, numbers, hyphens and underscores.",
+                "alreadyExists": "{{emoji}} A snippet already uses this alias.",
+                "notFound": "{{emoji}} This snippet does not exist, or you are not allowed to edit it.",
+                "confirm": "{{emoji}} Done! The alias `{{alias}}` has been added."
+            },
+            "edit": {
+                "wrongName": "{{emoji}} An alias can only contain lowercase letters, numbers, hyphens and underscores.",
+                "alreadyExists": "{{emoji}} A snippet already uses this alias.",
+                "notFound": "{{emoji}} This alias does not exist, or you are not allowed to edit it.",
+                "primaryRequired": "{{emoji}} A snippet always needs a primary alias. Promote another one instead.",
+                "confirm": "{{emoji}} Done! The alias `{{alias}}` has been updated."
+            },
+            "delete": {
+                "notFound": "{{emoji}} This alias does not exist, or you are not allowed to delete it.",
+                "primaryRequired": "{{emoji}} You cannot delete a snippet's primary alias. Promote another one first.",
+                "confirm": "{{emoji}} Done! The alias `{{alias}}` has been deleted."
+            }
+        },
+        "modalFields": {
+            "name": "Name",
+            "content": "Content",
+            "attachment": "Attachment",
+            "canRead": "Who can send",
+            "canEdit": "Who can modify / delete"
+        },
+        "add": {
+            "noContent": "{{emoji}} That message has no text to save. A snippet needs some content.",
+            "contentTooLong": "{{emoji}} That message is too long to save as a snippet ({{max}} characters max).",
+            "onlyOne": "{{emoji}} You already own a snippet, and you can only have one. Delete it first to create another.",
+            "wrongName": "{{emoji}} A snippet name can only contain lowercase letters, numbers, hyphens and underscores.",
+            "alreadyExists": "{{emoji}} A snippet with this name already exists.",
+            "confirm": "{{emoji}} Done! The snippet `{{name}}` has been created.",
+            "modal": {
+                "title": "New snippet"
+            }
+        },
+        "edit": {
+            "notFound": "{{emoji}} This snippet does not exist, or you are not allowed to edit it.",
+            "raced": "{{emoji}} The snippet was deleted while you were editing it.",
+            "confirm": "{{emoji}} Done! The snippet `{{name}}` has been edited.",
+            "modal": {
+                "title": "Edit snippet"
+            }
+        },
+        "delete": {
+            "notFound": "{{emoji}} This snippet does not exist, or you are not allowed to delete it.",
+            "confirm": "{{emoji}} Done! The snippet `{{name}}` has been deleted."
+        },
+        "restrict": {
+            "notFound": "{{emoji}} This snippet does not exist, or you are not allowed to update its permissions.",
+            "raced": "{{emoji}} The snippet was deleted while you were editing it.",
+            "confirm": "{{emoji}} Done! The permissions of the snippet `{{name}}` have been changed.",
+            "modal": {
+                "title": "Update snippet's permissions",
+                "hint": "Leave both empty to make the snippet public."
+            }
+        }
+    },
+    "save-as-snippet": {
+        "definition": {
+            "name": "Save as snippet"
+        }
     }
 }

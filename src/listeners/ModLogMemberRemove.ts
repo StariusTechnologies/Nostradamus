@@ -30,7 +30,7 @@ export default class extends Listener {
     }
 
     private async detectKickReason(
-        member: GuildMember | PartialGuildMember
+        member: GuildMember | PartialGuildMember,
     ): Promise<string | null | undefined> {
         await sleep(AUDIT_LOG_DELAY_MS);
 
@@ -42,7 +42,7 @@ export default class extends Listener {
             const now = Date.now();
             const entry = logs.entries.find(e =>
                 e.target?.id === member.id
-                && now - e.createdTimestamp <= RECENT_ENTRY_WINDOW_MS
+                && now - e.createdTimestamp <= RECENT_ENTRY_WINDOW_MS,
             );
 
             if (!entry) {

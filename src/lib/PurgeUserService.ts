@@ -3,7 +3,7 @@ import type {
     GuildTextBasedChannel,
     Invite,
     Message,
-    Snowflake
+    Snowflake,
 } from 'discord.js';
 import { container } from '@sapphire/framework';
 
@@ -20,7 +20,7 @@ const INVITE_DISPLAY_LIMIT = 60;
 export async function purgeUser(
     guild: Guild,
     userId: Snowflake,
-    durationMs: number
+    durationMs: number,
 ): Promise<PurgeResult> {
     const sinceTimestamp = Date.now() - durationMs;
     const cacheDeleted = await purgeFromCache(guild, userId, sinceTimestamp);
@@ -38,7 +38,7 @@ export async function purgeUser(
 async function purgeFromCache(
     guild: Guild,
     userId: Snowflake,
-    sinceTimestamp: number
+    sinceTimestamp: number,
 ): Promise<Set<Snowflake>> {
     const deletedIds = new Set<Snowflake>();
 
@@ -51,7 +51,7 @@ async function purgeFromCache(
         const matches = textChannel.messages.cache.filter((message: Message) =>
             message.author?.id === userId
             && message.createdTimestamp > sinceTimestamp
-            && !message.system
+            && !message.system,
         );
 
         if (matches.size === 0) {
@@ -82,7 +82,7 @@ async function purgeFromDb(
     guild: Guild,
     userId: Snowflake,
     sinceTimestamp: number,
-    alreadyDeleted: Set<Snowflake>
+    alreadyDeleted: Set<Snowflake>,
 ): Promise<number> {
     const rows = await container.prisma.trackedMessage.findMany({
         where: {

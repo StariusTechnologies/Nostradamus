@@ -7,7 +7,7 @@ import { LocalizedSubcommand } from '../../lib/i18n/LocalizedSubcommand.js';
 import {
     registerCommandDescriptions,
     registerOptionDescriptions,
-    registerSubcommandDescriptions
+    registerSubcommandDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
@@ -57,7 +57,7 @@ export default class extends LocalizedSubcommand {
             t('commands:panic-role.subcommand.add.confirm', {
                 emoji: Emojis.RainbowSheep,
                 roleName: role.name,
-            })
+            }),
         ));
     }
 
@@ -78,7 +78,7 @@ export default class extends LocalizedSubcommand {
                 t('commands:panic-role.subcommand.remove.notConfigured', {
                     emoji: '❌',
                     roleName: role.name,
-                })
+                }),
             ));
 
             return;
@@ -92,7 +92,7 @@ export default class extends LocalizedSubcommand {
             t('commands:panic-role.subcommand.remove.confirm', {
                 emoji: Emojis.RainbowSheep,
                 roleName: role.name,
-            })
+            }),
         ));
     }
 
@@ -133,20 +133,20 @@ export default class extends LocalizedSubcommand {
                     .setName('add')
                     .addRoleOption(option => registerOptionDescriptions(this.name, option
                         .setName('role')
-                        .setRequired(true), { subcommand: 'add' }
-                    ))
+                        .setRequired(true), { subcommand: 'add' },
+                    )),
                 ))
                 .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
                     .setName('remove')
                     .addRoleOption(option => registerOptionDescriptions(this.name, option
                         .setName('role')
-                        .setRequired(true), { subcommand: 'remove' }
-                    ))
+                        .setRequired(true), { subcommand: 'remove' },
+                    )),
                 ))
                 .addSubcommand(sub => registerSubcommandDescriptions(this.name, sub
-                    .setName('list')
-                ))
-            )
+                    .setName('list'),
+                )),
+            ),
         );
     }
 }

@@ -10,14 +10,14 @@ import {
     type Message,
     type MessageActionRowComponentBuilder,
     SeparatorBuilder,
-    TextDisplayBuilder
+    TextDisplayBuilder,
 } from 'discord.js';
 import { InteractionContextType, MessageFlags } from 'discord-api-types/v10';
 import {
     type ApplicationCommandRegistry,
     type Args,
     Command as SapphireCommand,
-    container as sapphireContainer
+    container as sapphireContainer,
 } from '@sapphire/framework';
 import { fetchT } from '@sapphire/plugin-i18next';
 import { type TFunction } from 'i18next';
@@ -25,12 +25,12 @@ import { LocalizedCommand } from '../../lib/i18n/LocalizedCommand.js';
 import {
     Languages,
     registerCommandDescriptions,
-    registerOptionDescriptions
+    registerOptionDescriptions,
 } from '../../lib/i18n/LanguageManager.js';
 import { InteractionManager } from '../../lib/InteractionManager.js';
 import { Components } from '../../lib/Components.js';
 import { Colors } from '../../util/Colors.js';
-import { DEFAULT_PRIMARY_LOCALE, getSetting, SettingKey } from '../../lib/Settings.js';
+import { DEFAULT_PRIMARY_LOCALE, getSetting, SettingKey } from '../../lib/SettingsService.js';
 import { MINUTE } from '../../util/DateTime.js';
 import {
     BOLD_MARKER,
@@ -40,7 +40,7 @@ import {
     Wiktionary,
     type WiktionaryEntry,
     type WiktionaryPage,
-    type WiktionarySense
+    type WiktionarySense,
 } from '../../lib/Wiktionary.js';
 
 const COMMAND_NAME = 'def';
@@ -138,7 +138,7 @@ export default class extends LocalizedCommand {
             word,
             interaction.options.getString('language'),
             interaction.user.id,
-            presenter
+            presenter,
         );
     }
 
@@ -197,13 +197,13 @@ export default class extends LocalizedCommand {
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('word')
                     .setAutocomplete(true)
-                    .setRequired(true)
+                    .setRequired(true),
                 ))
                 .addStringOption(option => registerOptionDescriptions(this.name, option
                     .setName('language')
-                    .setRequired(false)
-                ).addChoices(...EDITION_CHOICES))
-            )
+                    .setRequired(false),
+                ).addChoices(...EDITION_CHOICES)),
+            ),
         );
     }
 
@@ -235,7 +235,7 @@ export default class extends LocalizedCommand {
         word: string,
         languageOverride: string | null,
         userId: string,
-        presenter: Presenter
+        presenter: Presenter,
     ): Promise<void> {
         if (word.length === 0) {
             await presenter.send(Components.error(t('commands:def.error.empty', { emoji: '❌' })).components);
@@ -291,7 +291,7 @@ export default class extends LocalizedCommand {
         t: TFunction,
         page: WiktionaryPage,
         userId: string,
-        presenter: Presenter
+        presenter: Presenter,
     ): Promise<void> {
         const pages = this.paginate(page.entries);
         const render = (index: number, disabled = false): ContainerBuilder =>
@@ -425,7 +425,7 @@ export default class extends LocalizedCommand {
         page: WiktionaryPage,
         pages: RenderedPage[],
         index: number,
-        disabled: boolean
+        disabled: boolean,
     ): ContainerBuilder {
         const heading = t('commands:def.heading', {
             word: escapeMarkdown(page.title),
@@ -462,7 +462,7 @@ export default class extends LocalizedCommand {
         t: TFunction,
         pages: RenderedPage[],
         index: number,
-        disabled: boolean
+        disabled: boolean,
     ): ButtonBuilder[] {
         const buttons: ButtonBuilder[] = [];
 
@@ -477,7 +477,7 @@ export default class extends LocalizedCommand {
                     .setCustomId(NEXT_BUTTON_ID)
                     .setStyle(ButtonStyle.Secondary)
                     .setLabel(t('commands:def.next'))
-                    .setDisabled(disabled || index === pages.length - 1)
+                    .setDisabled(disabled || index === pages.length - 1),
             );
         }
 
@@ -503,7 +503,7 @@ export default class extends LocalizedCommand {
             return new ContainerBuilder()
                 .setAccentColor(Colors.Info)
                 .addTextDisplayComponents(new TextDisplayBuilder().setContent(
-                    t('commands:def.noExamples', { emoji: '🤷' })
+                    t('commands:def.noExamples', { emoji: '🤷' }),
                 ));
         }
 
@@ -564,7 +564,7 @@ export default class extends LocalizedCommand {
         partOfSpeech: string,
         senses: WiktionarySense[],
         path: number[],
-        groups: ExampleGroup[]
+        groups: ExampleGroup[],
     ): void {
         let position = 0;
 
