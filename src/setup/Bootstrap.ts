@@ -151,7 +151,7 @@ export class Bootstrap {
         await container.prisma.$connect();
 
         return new Promise<Client>((resolve, reject) => {
-            this.client.once('ready', async (client: Client) => {
+            this.client.once('clientReady', async (client: Client) => {
                 await client.application!.entitlements.fetch();
                 resolve(client);
             });
