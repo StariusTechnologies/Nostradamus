@@ -16,12 +16,12 @@ export default class extends Listener {
 
         const prefix = await getSetting(message.guildId, SettingKey.SnippetPrefix);
 
-        if (!prefix || !message.content.startsWith(prefix)) {
-            return;
-        }
-
         if (message.partial) {
             await message.fetch();
+        }
+
+        if (!prefix || !message.content.startsWith(prefix)) {
+            return;
         }
 
         const botMember = await message.guild.members.fetch(message.client.user.id);
