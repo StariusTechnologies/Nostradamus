@@ -21,7 +21,7 @@
     "contributors": [],
     "scripts": {
         "start": "npm run clean-compile && npm run quickstart",
-        "quickstart": "node .",
+        "quickstart": "node --trace-deprecation .",
         "compile": "tsc && npm run copy-static-files",
         "clean-compile": "rm -rf dist && tsc --build --clean && npm run compile",
         "copy-static-files": "copyfiles --up 1 \"src/**/*.json\" dist/",

@@ -20,8 +20,12 @@ export default class extends Listener {
             return;
         }
 
+        if (message.partial) {
+            await message.fetch();
+        }
+
         const botMember = await message.guild.members.fetch(message.client.user.id);
-        const canPost = message.channel.permissionsFor(botMember).has(PermissionFlagsBits.SendMessages);
+        const canPost = message.channel?.permissionsFor(botMember).has(PermissionFlagsBits.SendMessages);
         const member = await message.guild.members.fetch(message.author.id);
 
         if (!member || !canPost) {
@@ -35,6 +39,11 @@ export default class extends Listener {
             return;
         }
 
-        await sendSnippet(message.channel, snippet);
+        const responseToId = message.reference?.messageId;
+        const responseTo = responseToId
+            ? await message.channel.messages.fetch(responseToId).catch(() => undefined)
+            : undefined;
+
+        await sendSnippet(message.channel, snippet, responseTo);
     }
 }
