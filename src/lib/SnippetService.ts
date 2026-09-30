@@ -252,5 +252,6 @@ export async function sendSnippet(channel: GuildTextBasedChannel, snippet: Snipp
     return (responseTo ? responseTo.reply.bind(responseTo) : channel.send.bind(channel))({
         components: [componentContainer],
         flags: MessageFlags.IsComponentsV2,
+        allowedMentions: { parse: [], repliedUser: true },
     });
 }
