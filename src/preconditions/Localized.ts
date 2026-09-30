@@ -7,6 +7,7 @@ import {
     type MessageActionRowComponentBuilder,
     MessageFlags,
     StringSelectMenuBuilder,
+    type StringSelectMenuInteraction,
     TextDisplayBuilder,
 } from 'discord.js';
 import { LanguageEmoji, Languages, multipleT } from '../lib/i18n/LanguageManager.js';
@@ -53,11 +54,23 @@ export class Localized extends Precondition {
             flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2,
         });
 
-        const selection = await interactionResponse.awaitMessageComponent({
-            componentType: ComponentType.StringSelect,
-            time: 10 * MINUTE,
-            filter: component => component.customId === 'locale-select',
-        });
+        let selection: StringSelectMenuInteraction;
+
+        try {
+            selection = await interactionResponse.awaitMessageComponent({
+                componentType: ComponentType.StringSelect,
+                time: 10 * MINUTE,
+                filter: component => component.customId === 'locale-select',
+            });
+        } catch {
+            const timeoutText = multipleT(locales, 'preconditions:localized.configuration.timeout', '\n', true);
+
+            await interaction.editReply({
+                components: [new TextDisplayBuilder().setContent(`## ${title}\n${timeoutText}`)],
+            });
+
+            return this.error({ message: 'No locale was selected before the prompt expired.' });
+        }
 
         const [selectedLocale] = selection.values;
         const t = container.i18n.getT(selectedLocale);
@@ -72,8 +85,10 @@ export class Localized extends Precondition {
             components: [confirmDisplay],
         });
 
-        await this.container.prisma.userPreference.create({
-            data: { idUser: interaction.user.id, locale: selectedLocale },
+        await this.container.prisma.userPreference.upsert({
+            where: { idUser: interaction.user.id },
+            create: { idUser: interaction.user.id, locale: selectedLocale },
+            update: { locale: selectedLocale },
         });
 
         return this.ok();

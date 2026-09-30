@@ -1,9 +1,10 @@
 {
-	"localized": {
+    "localized": {
         "configuration": {
             "title": "Préférence de langue",
             "text": "Avant tout, dans quelle langue souhaitez-vous continuer ?",
-            "confirm": "{{emoji}} Merci ! Votre préférence a été enregistrée."
+            "confirm": "{{emoji}} Merci ! Votre préférence a été enregistrée.",
+            "timeout": "Aucune langue n'a été choisie à temps. Relancez la commande pour en choisir une."
         }
-	}
+    }
 }

@@ -3,7 +3,8 @@
         "configuration": {
             "title": "Language preference",
             "text": "Before anything else, what language would you like to proceed with?",
-            "confirm": "{{emoji}} Thank you! Your preference has been saved."
+            "confirm": "{{emoji}} Thank you! Your preference has been saved.",
+            "timeout": "No language was picked in time. Run the command again to choose one."
         }
     }
 }
